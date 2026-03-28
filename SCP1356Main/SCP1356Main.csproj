@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{A11F2483-8A04-4041-A224-BAA48EC76918}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>SCP1356Main</RootNamespace>
+        <AssemblyName>SCP1356Main</AssemblyName>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="AdvancedMERTools">
+          <HintPath>..\..\..\Dokumente\Plugins\AdvancedMERTools.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Assembly-CSharp-Publicized.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="AudioPlayerApi">
+          <HintPath>..\..\..\.config\EXILED\Plugins\dependencies\AudioPlayerApi.dll</HintPath>
+        </Reference>
+        <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\CommandSystem.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.API, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.API.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.CreditTags, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.CreditTags.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.CustomItems, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.CustomItems.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.CustomRoles, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.CustomRoles.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.Events, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.Events.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.Loader, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.Loader.dll</HintPath>
+        </Reference>
+        <Reference Include="Exiled.Permissions, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.Permissions.dll</HintPath>
+        </Reference>
+        <Reference Include="HintServiceMeow">
+          <HintPath>..\..\..\.config\EXILED\Plugins\7777\HintServiceMeow-LabAPI.dll</HintPath>
+        </Reference>
+        <Reference Include="LabApi, Version=1.1.5.0, Culture=neutral, processorArchitecture=Amd64">
+          <HintPath>..\packages\Northwood.LabAPI.1.1.5\lib\net48\LabApi.dll</HintPath>
+        </Reference>
+        <Reference Include="Mirror">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\..\..\.config\EXILED\Plugins\dependencies\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="NorthwoodLib">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\NorthwoodLib.dll</HintPath>
+        </Reference>
+        <Reference Include="NorthwoodLib, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\NorthwoodLib.dll</HintPath>
+        </Reference>
+        <Reference Include="ProjectMER">
+          <HintPath>..\..\..\Dokumente\Plugins\ProjectMER.dll</HintPath>
+        </Reference>
+        <Reference Include="System">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Buffers">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Buffers.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Collections.Immutable">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Collections.Immutable.dll</HintPath>
+        </Reference>
+        <Reference Include="System.ComponentModel.Composition">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.ComponentModel.Composition.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Configuration">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Configuration.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Core">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Data">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Data.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Data.DataSetExtensions">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Data.DataSetExtensions.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Drawing">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Drawing.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Net.Http">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Net.Http.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Numerics.Vectors">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Numerics.Vectors.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Runtime">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Security.dll</HintPath>
+        </Reference>
+        <Reference Include="System.ServiceModel.Internals">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.ServiceModel.Internals.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Encodings.Web">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Text.Encodings.Web.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Json">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\System.Text.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+          <HintPath>..\packages\YamlDotNet.11.0.1\lib\net45\YamlDotNet.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="API\Breach\BreachAPI.cs" />
+        <Compile Include="API\Commands\Debug.cs" />
+        <Compile Include="API\Commands\Password.cs" />
+        <Compile Include="API\Commands\Updater.cs" />
+        <Compile Include="API\Commands\Website.cs" />
+        <Compile Include="API\Events\CustomEvents.cs" />
+        <Compile Include="API\Events\DamagingSCP1356.cs" />
+        <Compile Include="API\Events\HealthObjectDamaged.cs" />
+        <Compile Include="API\Events\HealthObjectKilled.cs" />
+        <Compile Include="API\Events\RadiationParticleHit.cs" />
+        <Compile Include="API\Events\SCP1356DamagedPlayer.cs" />
+        <Compile Include="API\Events\SCP1356Killed.cs" />
+        <Compile Include="API\Events\SCP1356KillingPlayer.cs" />
+        <Compile Include="API\Extensions\AudioExtension.cs" />
+        <Compile Include="API\Extensions\Tools.cs" />
+        <Compile Include="API\Schematic\HealthObject\Detector.cs" />
+        <Compile Include="API\Schematic\HealthObject\HealthObject.cs" />
+        <Compile Include="API\Schematic\Radiation\RadiationManager.cs" />
+        <Compile Include="API\Schematic\Start\SchematicSetup.cs" />
+        <Compile Include="Configs\Configs.cs" />
+        <Compile Include="Configs\Translation.cs" />
+        <Compile Include="Plugin.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="packages.config" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>
