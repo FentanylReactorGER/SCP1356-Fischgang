@@ -154,7 +154,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="API\Breach\BreachAPI.cs" />
-        <Compile Include="API\Commands\Debug.cs" />
         <Compile Include="API\Commands\Password.cs" />
         <Compile Include="API\Commands\Updater.cs" />
         <Compile Include="API\Commands\Website.cs" />
