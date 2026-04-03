@@ -245,8 +245,6 @@ namespace SCP1356Main.API.Breach
                         }
                     }
                 }
-
-                yield return Timing.WaitForSeconds(UnityEngine.Random.Range(20f, 40f));
             }
 
             Log.Info("SCP-1356 breach ended.");
