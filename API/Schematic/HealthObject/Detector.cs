@@ -35,17 +35,38 @@ namespace SCP1356Main.API.Schematic.HealthObject
             SCP1356Contained = false;
             SCP1356ChamberOpen = false;
             CustomEvents.OnHealthObjectKilled += OnHealthObjectDestroyed;
-            CustomEvents.HealthObjectDamaged += HealthDamaged;
+            CustomEvents.HealthObjectDamagedEvent += HealthDamaged;
+            CustomEvents.SCP1356DamagedPlayer += PlayerDamaged;
             Exiled.Events.Handlers.Warhead.Detonated += WarheadContain;
         }
 
         public void UnsubEvents()
         {
             CustomEvents.OnHealthObjectKilled -= OnHealthObjectDestroyed;
-            CustomEvents.HealthObjectDamaged -= HealthDamaged;
+            CustomEvents.HealthObjectDamagedEvent -= HealthDamaged;
+            CustomEvents.SCP1356DamagedPlayer -= PlayerDamaged;
             Exiled.Events.Handlers.Warhead.Detonated -= WarheadContain;
         }
 
+        private bool cooldown = false;
+        private void PlayerDamaged(object obj, SCP1356DamagedPlayer ev)
+        {
+            if (!cooldown)
+            {
+                var s = Plugin.Singleton;
+                int value = Mathf.RoundToInt(UnityEngine.Random.Range(1f, ev.Damage));
+                s._status.SetActivity(value, 2);
+                Timing.RunCoroutine(CoolDown(2f));
+            }
+        }
+
+        private IEnumerator<float> CoolDown(float time)
+        {
+            cooldown = true;
+            yield return Timing.WaitForSeconds(time);
+            cooldown = false;
+        }
+        
         private void HealthDamaged(object sender, HealthObjectDamaged ev)
         {
             if (ev.HealthComponent == Plugin.Singleton.SchematicSetup.SCP1356.gameObject

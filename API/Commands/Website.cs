@@ -1,105 +1,113 @@
-using Exiled.API.Features;
-using MEC;
-using Newtonsoft.Json;
-using ProjectMER.Features.Objects;
-using SCP1356Main.API.Schematic.HealthObject;
-using SCP1356Main.Configs;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using UnityEngine;
+using Exiled.API.Enums;
+using Exiled.API.Features;
+using Newtonsoft.Json;
 
-#nullable disable
 namespace SCP1356Main.API.Commands
 {
-  public class Website
-  {
-    private CoroutineHandle _coroutine;
-    private HttpClient _client;
-    private int _lastHealth = -1;
-    private float _lastMaxHealth = -1f;
-    private string _lastRoom = string.Empty;
-    private float _lastSendTime = 0.0f;
-
-    public void SubEvents()
+    public class Scp1356StatusService
     {
-      this._client = new HttpClient();
-      this._client.DefaultRequestHeaders.Clear();
-      this._client.DefaultRequestHeaders.Add("Authorization", "SECRET_KEY");
-      this._coroutine = Timing.RunCoroutine(this.UpdateLoop());
-    }
+        private readonly HttpClient _httpClient;
+        private readonly string _baseUrl;
+        private readonly string _apiToken;
 
-    public void UnSubEvents()
-    {
-      Timing.KillCoroutines(new CoroutineHandle[1]
-      {
-        this._coroutine
-      });
-      this._client?.Dispose();
-      this._client = (HttpClient)null;
-    }
-
-    private IEnumerator<float> UpdateLoop()
-    {
-      while (true)
-      {
-        this.UpdateDataSafe();
-        yield return Timing.WaitForSeconds(2f);
-      }
-    }
-
-    private void UpdateDataSafe()
-    {
-      try
-      {
-        SchematicObject scP1356 = Plugin.Singleton.SchematicSetup.SCP1356;
-        if (scP1356 == null)
-          return;
-        HealthComponent componentInChildren = ((Component)scP1356).GetComponentInChildren<HealthComponent>();
-        float num = componentInChildren != null ? componentInChildren.Health : 0.0f;
-        float scP1356Health = ((Plugin<Config>)Plugin.Singleton).Config.SCP1356Health;
-        Plugin singleton = Plugin.Singleton;
-        string room = singleton.Translation.RoomTypesCustomLanguage[singleton.BreachAPI.CurrentRoom] ?? "UNKNOWN";
-        int health = Mathf.RoundToInt(num);
-        if (this._lastHealth == health &&
-            (double)Math.Abs(this._lastMaxHealth - scP1356Health) <= 0.009999999776482582 &&
-            !(this._lastRoom != room) && (double)Time.time - (double)this._lastSendTime <= 30.0)
-          return;
-        this._lastHealth = health;
-        this._lastMaxHealth = scP1356Health;
-        this._lastRoom = room;
-        this._lastSendTime = Time.time;
-        this.SendData(health, scP1356Health, room);
-      }
-      catch (Exception ex)
-      {
-        Log.Error($"Website-Fehler: {ex}");
-      }
-    }
-
-    private async void SendData(int health, float maxHealth, string room)
-    {
-      try
-      {
-        var data = new
+        public Scp1356StatusService(string baseUrl, string apiToken)
         {
-          health = health,
-          maxHealth = maxHealth,
-          location = room,
-        };
-        string json = JsonConvert.SerializeObject((object)data);
-        StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-        HttpResponseMessage httpResponseMessage =
-          await this._client.PostAsync("http://m26g23tvsv4vpvyy.myfritz.net:3000/update", (HttpContent)content);
-        data = null;
-        json = (string)null;
-        content = (StringContent)null;
-      }
-      catch (Exception ex)
-      {
-        Log.Error($"HTTP-Fehler: {ex}");
-      }
+            _baseUrl = baseUrl.TrimEnd('/');
+            _apiToken = apiToken;
+            _httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(5)
+            };
+            
+            _httpClient.DefaultRequestHeaders.Remove("x-api-token");
+            _httpClient.DefaultRequestHeaders.Add("x-api-token", _apiToken);
+        }
+
+        public async void SetHp(float hp)
+        {
+            await PostAsync("/api/set/hp", new
+            {
+                hp = hp
+            });
+        }
+        /// <summary>
+        /// String Breach Status
+        /// </summary>
+        public async void SetBreachStatus(string breachStatus)
+        {
+            await PostAsync("/api/set/breach-status", new
+            {
+                breachStatus = breachStatus ?? "UNKNOWN"
+            });
+        }
+
+        /// <summary>
+        /// Räume = Jetziger, Vorheriger
+        /// </summary>
+        public async void SetRooms(RoomType currentRoom, RoomType previousRoom)
+        {
+            await PostAsync("/api/set/rooms", new
+            {
+                currentRoom = Plugin.Singleton.Translation.RoomTypesCustomLanguage[currentRoom],
+                previousRoom = Plugin.Singleton.Translation.RoomTypesCustomLanguage[previousRoom]
+            });
+        }
+        /// <summary>
+        /// Gibt einen Custom Log
+        /// </summary>
+        public async void AddRemark(string message)
+        {
+            await PostAsync("/api/add-remark", new
+            {
+                message = message
+            });
+        }
+        
+        /// <summary>
+        /// activity = 0 bis 10
+        /// durationSeconds = wie lange diese Aktivität gehalten wird
+        /// </summary>
+        public async void SetActivity(int activity, int durationSeconds)
+        {
+            if (activity < 0)
+                activity = 0;
+
+            if (activity > 10)
+                activity = 10;
+
+            if (durationSeconds < 0)
+                durationSeconds = 0;
+
+            if (durationSeconds > 60)
+                durationSeconds = 60;
+
+            await PostAsync("/api/set/activity", new
+            {
+                activity = activity,
+                duration = durationSeconds
+            });
+        }
+
+        private async System.Threading.Tasks.Task PostAsync(string endpoint, object payload)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(payload);
+                using StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                using HttpResponseMessage response = await _httpClient.PostAsync(_baseUrl + endpoint, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Exiled.API.Features.Log.Warn($"SCP-1356 Status API error: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Exiled.API.Features.Log.Error($"SCP-1356 Status API request failed: {ex}");
+            }
+        }
     }
-  }
 }

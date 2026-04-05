@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCP-1356 // Deutsche Überwachungsoberfläche</title>
+  <meta
+    name="description"
+    content="SCP-1356 Überwachungskonsole im Stil der SCP Foundation mit deutscher Oberfläche."
+  />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://commons.wikimedia.org" />
+  <link rel="preconnect" href="https://upload.wikimedia.org" />
+  <link rel="stylesheet" href="/style.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="scanline"></div>
+  <div class="bg-symbol" aria-hidden="true"></div>
+
+  <main class="shell">
+    <header class="hero">
+      <div class="hero__branding">
+        <div class="eyebrow">SICHERN • EINDÄMMEN • BESCHÜTZEN</div>
+
+        <div class="hero__title-row">
+          <img
+            class="hero__logo"
+            src="https://commons.wikimedia.org/wiki/Special:FilePath/SCP%20Foundation%20(emblem).svg"
+            alt="SCP Foundation Emblem"
+          />
+          <div>
+<a href="/scp1356lore/SCP1356.html" class="lore-link">
+  <h1 class="lore-button">SCP-1356</h1>
+</a>
+            <p class="subtitle">INTERNE ÜBERWACHUNGS- UND EINDÄMMUNGSOBERFLÄCHE</p>
+          </div>
+        </div>
+
+        <div class="hero__meta">
+          <span class="pill">STANDORT-DE</span>
+          <span class="pill">FREIGABESTUFE 4</span>
+          <span class="pill">LIVE-TELEMETRIE</span>
+        </div>
+      </div>
+
+      <aside class="hero__panel">
+        <img
+          class="wordmark"
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/SCP%20Foundation%20logo.svg"
+          alt="SCP Foundation Logo"
+        />
+
+        <div class="site-badge">
+          <span class="site-badge__label">ANLAGE</span>
+          <strong>SITE-1356</strong>
+        </div>
+
+        <div class="hero__warning">
+          Zugriff nur für autorisiertes Personal. Unbefugte Einsichtnahme wird protokolliert.
+        </div>
+      </aside>
+    </header>
+
+    <section class="status-bar" id="alertBar" aria-live="polite">
+      <span class="status-bar__dot"></span>
+      <span id="breachBanner">SICHERHEITSSTATUS // UNBEKANNT</span>
+      <span class="status-bar__spacer"></span>
+      <span id="lastUpdatedText">Letzte Aktualisierung: —</span>
+    </section>
+
+    <section class="overview-grid">
+      <article class="panel panel--primary panel--hp">
+        <div class="panel__label">Vitalintegrität</div>
+        <div class="hp-wrap">
+          <div class="hp-value" id="hpValue">0</div>
+          <div class="hp-unit">HP</div>
+        </div>
+        <p class="panel__hint">Biometrischer Zustand der erfassten Entität</p>
+      </article>
+
+      <article class="panel">
+        <div class="panel__label">Sicherheitsstatus</div>
+        <div class="panel__value" id="breachStatus">UNBEKANNT</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel__label">Aktueller Raum</div>
+        <div class="panel__value" id="currentRoom">Sektor Unbekannt</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel__label">Vorheriger Raum</div>
+        <div class="panel__value" id="previousRoom">Sektor Unbekannt</div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel panel--chart">
+        <div class="panel-head">
+          <div>
+            <div class="panel__label">Verhaltensaktivitätsindex</div>
+            <div class="panel__sub">
+              60-Sekunden-Auswertung // Y = Aktivität 0–10 // X = Zeit
+            </div>
+          </div>
+
+          <div class="live-badge">
+            <span>LIVE</span>
+            <strong id="liveActivity">0</strong>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="activityChart" aria-label="Aktivitätsdiagramm"></canvas>
+        </div>
+      </article>
+
+      <article class="panel panel--log">
+        <div class="panel-head panel-head--tight">
+          <div>
+            <div class="panel__label">Eindämmungsprotokoll</div>
+            <div class="panel__sub">Zeitgestempelte Statusmeldungen in Echtzeit</div>
+          </div>
+        </div>
+
+        <div class="terminal" id="terminalLog">
+          <div>&gt; Starte Foundation-Telemetrie …</div>
+          <div>&gt; Verbinde mit SCP-1356-Datenstrom …</div>
+        </div>
+      </article>
+    </section>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+  </div>
+
+  <p>
+    © 2026 SCP-1356 Monitoring Interface – Fanprojekt
+  </p>
+
+  <p>
+    SCP Foundation Inhalte lizenziert unter
+    <strong>CC BY-SA 3.0</strong>.
+  </p>
+</footer>
+  </main>
+</body>
+</html>

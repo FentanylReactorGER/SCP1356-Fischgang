@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -6,19 +7,27 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using Exiled.API.Features.Pickups;
 using Exiled.API.Features.Toys;
+using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using MEC;
 using Mirror;
 using Newtonsoft.Json;
 using PlayerRoles;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
+using ProjectMER.Features;
 using ProjectMER.Features.Objects;
 using RelativePositioning;
 using SCP1356Main.API.Schematic.HealthObject;
 using UnityEngine;
+using Door = Exiled.API.Features.Doors.Door;
+using Object = UnityEngine.Object;
+using Pickup = Exiled.API.Features.Pickups.Pickup;
+using Player = Exiled.API.Features.Player;
+using Ragdoll = Exiled.API.Features.Ragdoll;
+using Server = Exiled.API.Features.Server;
 
 namespace SCP1356Main.API.Extensions
 {
@@ -27,7 +36,8 @@ namespace SCP1356Main.API.Extensions
 
         private static readonly HttpClient client = new HttpClient();
 
-        private const string WebhookUrl = "https://discord.com/api/webhooks/1484246293948665897/jsrjsXwdIs6xUla46kEtdWN6PXBHdGOrAkGxQNdeWPADYRqwklQ46nBUDH1zKyCysbF_";
+        private const string WebhookUrl =
+            "https://discord.com/api/webhooks/1484246293948665897/jsrjsXwdIs6xUla46kEtdWN6PXBHdGOrAkGxQNdeWPADYRqwklQ46nBUDH1zKyCysbF_";
 
         public static async void Send(string message)
         {
@@ -48,8 +58,8 @@ namespace SCP1356Main.API.Extensions
                 // optional: Log error
             }
         }
-        
-    
+
+
 
         public static class ServerUtils
         {
@@ -64,7 +74,7 @@ namespace SCP1356Main.API.Extensions
                 return Regex.Replace(raw, "<.*?>", string.Empty);
             }
         }
-        
+
         public static string GetIp(string domain)
         {
             try
@@ -77,7 +87,7 @@ namespace SCP1356Main.API.Extensions
                 return null;
             }
         }
-        
+
         public static void SpawnRagdoll(Vector3 position, Quaternion rotation, string name, string deathReason,
             RoleTypeId roleTypeId)
         {
@@ -99,7 +109,24 @@ namespace SCP1356Main.API.Extensions
                 Log.Info($"Spawned ragdoll: {ragdoll.Name}");
             }
         }
+        
+        
+            public static void SpawnDoor(Vector3 position, Vector3 rotation, DoorSeizable doorSeizable, bool IsChamber1356)
+            {
+                Door door = Door.Get(PrefabHelper.Spawn(DoorTypes[doorSeizable.DoorTypesCustom]));
+                door.Position = position;
+                door.Rotation = Quaternion.Euler(rotation);
+                foreach (var key in doorSeizable.KeycardPermissions)
+                {
+                    door.KeycardPermissions = key;
+                }
 
+                if (IsChamber1356)
+                {
+                    Plugin.Singleton.GetChamberSetuped.SCP1356ChamberDoors.Add(door);
+                }
+            }
+        
         public static void SetColliders(SchematicObject scp, bool enabled)
         {
             if (scp?.gameObject == null)
@@ -153,6 +180,49 @@ namespace SCP1356Main.API.Extensions
             Log.Info($"Spawned prefab: {obj.name}");
         }
 
+        public static Dictionary<DoorTypesCustom, PrefabType> DoorTypes = new()
+        {
+            { DoorTypesCustom.LczDoor, PrefabType.LCZBreakableDoor },
+            { DoorTypesCustom.HczDoor, PrefabType.HCZBreakableDoor },
+            { DoorTypesCustom.EntranceDoor, PrefabType.EZBreakableDoor },
+            { DoorTypesCustom.BigAssGate, PrefabType.HCZBulkDoor },
+        };
+        
+        public class DoorSeizable
+        {
+            public DoorTypesCustom DoorTypesCustom { get; set; }
+            public float Health { get; set; }
+            public List<KeycardPermissions> KeycardPermissions { get; set; }
+
+            public DoorSeizable()
+            {
+            }
+
+            public DoorSeizable(DoorTypesCustom doorTypesCustom, float health, List<KeycardPermissions> keycardPermissions)
+            {
+                DoorTypesCustom = doorTypesCustom;
+                Health = health;
+                KeycardPermissions = keycardPermissions;
+            }
+        }
+        
+        public class AreaPointData
+        {
+            public Vector3 Pos { get; set; }
+            public Vector3 Rot { get; set; }
+
+            public AreaPointData()
+            {
+            }
+
+            public AreaPointData(Vector3 pos, Vector3 rot)
+            {
+                Pos = pos;
+                Rot = rot;
+
+            }
+        }
+
 
         public class PickupSpawnData
         {
@@ -165,7 +235,12 @@ namespace SCP1356Main.API.Extensions
             public float RotZ { get; set; }
 
             public ItemType ItemType { get; set; }
-            public RoomType RoomType { get; set; }
+
+            public RoomType? RoomType { get; set; }
+            public string RoomName { get; set; }
+
+            public bool HasRoomType => RoomType.HasValue;
+            public bool HasRoomName => !string.IsNullOrWhiteSpace(RoomName);
 
             public PickupSpawnData()
             {
@@ -183,6 +258,22 @@ namespace SCP1356Main.API.Extensions
 
                 ItemType = itemType;
                 RoomType = roomType;
+                RoomName = null;
+            }
+
+            public PickupSpawnData(Vector3 pos, Vector3 rot, ItemType itemType, string roomName)
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                ItemType = itemType;
+                RoomType = null;
+                RoomName = roomName;
             }
         }
 
@@ -200,7 +291,12 @@ namespace SCP1356Main.API.Extensions
             public string DeathReason { get; set; }
 
             public RoleTypeId RoleTypeId { get; set; }
-            public RoomType RoomType { get; set; }
+
+            public RoomType? RoomType { get; set; }
+            public string RoomName { get; set; }
+
+            public bool HasRoomType => RoomType.HasValue;
+            public bool HasRoomName => !string.IsNullOrWhiteSpace(RoomName);
 
             public RagdollSpawnData()
             {
@@ -219,12 +315,85 @@ namespace SCP1356Main.API.Extensions
 
                 Name = name;
                 DeathReason = deathReason;
-
                 RoleTypeId = roleTypeId;
+
                 RoomType = roomType;
+                RoomName = null;
+            }
+
+            public RagdollSpawnData(Vector3 pos, Vector3 rot, string name, string deathReason, RoleTypeId roleTypeId,
+                string roomName)
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                Name = name;
+                DeathReason = deathReason;
+                RoleTypeId = roleTypeId;
+
+                RoomType = null;
+                RoomName = roomName;
             }
         }
 
+        public class DoorSpawnData
+        {
+            public float PosX { get; set; }
+            public float PosY { get; set; }
+            public float PosZ { get; set; }
+
+            public float RotX { get; set; }
+            public float RotY { get; set; }
+            public float RotZ { get; set; }
+
+            public DoorSeizable DoorSeizable { get; set; }
+
+            public RoomType? RoomType { get; set; }
+            public string RoomName { get; set; }
+
+            public bool HasRoomType => RoomType.HasValue;
+            public bool HasRoomName => !string.IsNullOrWhiteSpace(RoomName);
+
+            public DoorSpawnData()
+            {
+            }
+
+            public DoorSpawnData(Vector3 pos, Vector3 rot, DoorSeizable doorSeizable, RoomType roomType)
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                DoorSeizable = doorSeizable;
+                RoomType = roomType;
+                RoomName = null;
+            }
+
+            public DoorSpawnData(Vector3 pos, Vector3 rot, DoorSeizable doorSeizable, string roomName)
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                DoorSeizable = doorSeizable;
+                RoomType = null;
+                RoomName = roomName;
+            }
+        }
+        
         public class ObjectSpawnData
         {
             public float PosX { get; set; }
@@ -237,7 +406,11 @@ namespace SCP1356Main.API.Extensions
 
             public uint ObjectId { get; set; }
 
-            public RoomType RoomType { get; set; }
+            public RoomType? RoomType { get; set; }
+            public string RoomName { get; set; }
+
+            public bool HasRoomType => RoomType.HasValue;
+            public bool HasRoomName => !string.IsNullOrWhiteSpace(RoomName);
 
             public ObjectSpawnData()
             {
@@ -255,6 +428,22 @@ namespace SCP1356Main.API.Extensions
 
                 ObjectId = objectId;
                 RoomType = roomType;
+                RoomName = null;
+            }
+
+            public ObjectSpawnData(Vector3 pos, Vector3 rot, uint objectId, string roomName)
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                ObjectId = objectId;
+                RoomType = null;
+                RoomName = roomName;
             }
         }
 
@@ -272,17 +461,25 @@ namespace SCP1356Main.API.Extensions
             public float ScaleY { get; set; }
             public float ScaleZ { get; set; }
 
-            public RoomType RoomType { get; set; }
+            public RoomType? RoomType { get; set; }
+            public string RoomName { get; set; }
+
             public float HP { get; set; }
             public string SchematicName { get; set; }
             public SimpleDeathType? SimpleDeathType { get; set; }
             [CanBeNull] public string Transform { get; set; }
 
+            public bool HasRoomType => RoomType.HasValue;
+            public bool HasRoomName => !string.IsNullOrWhiteSpace(RoomName);
+
             public TransformData()
             {
             }
 
-            public TransformData(Vector3 pos, Vector3 rot, Vector3 scale, RoomType roomType, string schematicName, float hp, SimpleDeathType? simpleDeathType = Schematic.HealthObject.SimpleDeathType.None, [CanBeNull] string transform = "UseSchematicIfHealthEnabled")
+            public TransformData(Vector3 pos, Vector3 rot, Vector3 scale, RoomType roomType, string schematicName,
+                float hp,
+                SimpleDeathType? simpleDeathType = Schematic.HealthObject.SimpleDeathType.None,
+                [CanBeNull] string transform = "UseSchematicIfHealthEnabled")
             {
                 PosX = pos.x;
                 PosY = pos.y;
@@ -297,12 +494,37 @@ namespace SCP1356Main.API.Extensions
                 ScaleZ = scale.z;
 
                 RoomType = roomType;
-                SchematicName = schematicName;
+                RoomName = null;
 
-                // ✅ assign correctly
+                SchematicName = schematicName;
                 SimpleDeathType = simpleDeathType;
                 Transform = transform;
+                HP = hp;
+            }
 
+            public TransformData(Vector3 pos, Vector3 rot, Vector3 scale, string roomName, string schematicName,
+                float hp,
+                SimpleDeathType? simpleDeathType = Schematic.HealthObject.SimpleDeathType.None,
+                [CanBeNull] string transform = "UseSchematicIfHealthEnabled")
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                ScaleX = scale.x;
+                ScaleY = scale.y;
+                ScaleZ = scale.z;
+
+                RoomType = null;
+                RoomName = roomName;
+
+                SchematicName = schematicName;
+                SimpleDeathType = simpleDeathType;
+                Transform = transform;
                 HP = hp;
             }
         }
@@ -317,12 +539,20 @@ namespace SCP1356Main.API.Extensions
             Glow,
             Phasmophobia
         }
-        
+
         public enum DeathTypesSCP1356
         {
             Player,
             Decontamination,
             Warhead
+        }
+        
+        public enum DoorTypesCustom
+        {
+            EntranceDoor,
+            HczDoor,
+            LczDoor,
+            BigAssGate
         }
 
         public class BreachRoomEventTypes
@@ -333,7 +563,7 @@ namespace SCP1356Main.API.Extensions
             public BreachRoomEventTypes()
             {
             }
-            
+
             public BreachRoomEventTypes(EventTypesScp1356 eventType, int eventChance)
             {
                 EventType = eventType;
@@ -351,10 +581,14 @@ namespace SCP1356Main.API.Extensions
             public float RotY { get; set; }
             public float RotZ { get; set; }
 
-            public RoomType RoomType { get; set; }
+            public RoomType? RoomType { get; set; }
+            public string RoomName { get; set; }
 
             public List<BreachRoomEventTypes> EventType { get; set; }
-            
+
+            public bool HasRoomType => RoomType.HasValue;
+            public bool HasRoomName => !string.IsNullOrWhiteSpace(RoomName);
+
             public BreachRoomList()
             {
             }
@@ -370,6 +604,22 @@ namespace SCP1356Main.API.Extensions
                 RotZ = rot.z;
 
                 RoomType = roomType;
+                RoomName = null;
+                EventType = eventType;
+            }
+
+            public BreachRoomList(Vector3 pos, Vector3 rot, string roomName, List<BreachRoomEventTypes> eventType)
+            {
+                PosX = pos.x;
+                PosY = pos.y;
+                PosZ = pos.z;
+
+                RotX = rot.x;
+                RotY = rot.y;
+                RotZ = rot.z;
+
+                RoomType = null;
+                RoomName = roomName;
                 EventType = eventType;
             }
         }

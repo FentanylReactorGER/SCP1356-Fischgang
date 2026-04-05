@@ -7,7 +7,7 @@ namespace SCP1356Main.API.Extensions
 {
     public static class AudioExtensions
     {
-        public static void PlayAudioAt(this Vector3 position, string clipPath, float maxDistance, float duration)
+        public static Speaker PlayAudioAt(this Vector3 position, string clipPath, float maxDistance, float duration, bool loop = false)
         {
             Log.Debug($"Playing audio step 1");
             string playerName = GenerateRandomString(6);
@@ -24,7 +24,7 @@ namespace SCP1356Main.API.Extensions
 
             speaker.Position = position;
 
-            player.AddClip(clipName, 1f, false, true);
+            player.AddClip(clipName, 1f, loop, true);
 
             bool cleaned = false;
 
@@ -42,6 +42,10 @@ namespace SCP1356Main.API.Extensions
                 catch { }
             }
 
+            if (duration <= -1f)
+            {
+                return speaker;
+            }
             Timing.CallDelayed(duration, () =>
             {
                 if (!Round.IsEnded)
@@ -50,6 +54,7 @@ namespace SCP1356Main.API.Extensions
 
             if (Round.IsEnded)
                 Cleanup();
+            return speaker;
         }
 
         private static string GenerateRandomString(int length)

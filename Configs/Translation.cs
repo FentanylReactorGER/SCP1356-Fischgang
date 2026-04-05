@@ -54,6 +54,12 @@ namespace SCP1356Main.Configs
     [Description("Übersetzte Nachricht für Eindämmung durch andere")]
     public string SCP1356CassieMessageTranslatedContainOther { get; set; } =
       "SCP-1356 Eindämmung erfolgreich durch {customTranslationGer}.";
+    
+    [Description("Übersetzte Nachrichten für die Website")]
+    public string SCP1356ContainmentMessages { get; set; } =
+      "CONTAINED";
+    public string SCP1356breachesMessage { get; set; } =
+      "BREACH";
 
 
     // === ROLE TRANSLATIONS (ENGLISH REQUIRED) ===

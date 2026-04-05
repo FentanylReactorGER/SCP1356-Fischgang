@@ -3,6 +3,8 @@ using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Interfaces;
 using System.ComponentModel;
+using Exiled.API.Extensions;
+using Interactables.Interobjects.DoorUtils;
 using PlayerRoles;
 using SCP1356Main.API.Extensions;
 using SCP1356Main.API.Schematic.HealthObject;
@@ -52,7 +54,7 @@ namespace SCP1356Main.Configs
         public float SCP1356Health { get; set; } = 1750f;
 
         [Description("Schematic-Name der Containment Chamber")]
-        public string SCP1356ChamberName { get; set; } = "Chamber1356";
+        public string SCP1356ChamberName { get; set; } = "SCP1356Chamber";
 
         [Description("Root-Objektname, wo die Ente gespawnt wird (NICHT ändern, außer du weißt, was du tust!)")]
         public string SCP1356RootName { get; set; } = "SCP1356RootObject";
@@ -62,26 +64,51 @@ namespace SCP1356Main.Configs
         public RoleTypeId SCP1356DummyRole { get; set; } = RoleTypeId.Tutorial; 
         [Description("Name des Dummies")]
         public string SCP1356DummyName { get; set; } = "SCP-1356";
+        
+        [Description("Chamber Configs")]
+        public RoomType SCP1356ChambersRoomType { get; set; } = RoomType.HczTestRoom;
+
+        public Vector3 SCP1356ChambersPos { get; set; } = new Vector3(0, 0, 0);
+        public Vector3 SCP1356ChambersRot { get; set; } = new Vector3(0, 0, 0);
 
 
 // === Schematic Spawn ===
+        
         [Description(
             "Schematic-Spawn-Einstellungen. Nutzung: Position, Rotation, Scale, RoomType, Name, HP (-1 für keine), DeathType (None, Destroy, Explode, Shrink, Disable), Ziel-GameObject (leer = gesamte Schematic).")]
         public List<Tools.TransformData> SchematicData { get; set; } = new()
         {
-            new Tools.TransformData(new Vector3(17.599f, 11.922f, 7.958292f),
-                new Vector3(0f, 90f, 0f),
-                new Vector3(1f, 1f, 1f),
-                RoomType.Lcz173,
-                "Chamber1356",
-                250f, SimpleDeathType.Destroy, "Health"),
-
-            new Tools.TransformData(new Vector3(10.475f, 13.076f, 4.028f),
-                new Vector3(0f, 90f, 0f),
-                new Vector3(1f, 1f, 1f),
-                RoomType.Lcz173, "class1356", -1f)
         };
 
+                
+        [Description(
+            "Tür-Spawn-Einstellungen. Nutzung: Position, Rotation,, RoomType (Oder Custom Chamber), DoorType, HP (-1 für keine), DeathType (None, Destroy, Explode, Shrink, Disable), Ziel-GameObject (leer = gesamte Schematic).")]
+        public List<Tools.DoorSpawnData> DoorSpawnData { get; set; } = new()
+        {
+            new Tools.DoorSpawnData(new Vector3(0.3780003f,37.225f,-1.886999f), new Vector3(0,0,0), new Tools.DoorSeizable(Tools.DoorTypesCustom.EntranceDoor, 50f, new List<KeycardPermissions>()
+            {
+                KeycardPermissions.ContainmentLevelTwo
+            }), "SCP1356Chamber"),
+            new Tools.DoorSpawnData(new Vector3(1.580001f,37.225f,0.003000975f), new Vector3(0,90,0), new Tools.DoorSeizable(Tools.DoorTypesCustom.EntranceDoor, 50f, new List<KeycardPermissions>()
+            {
+                KeycardPermissions.ContainmentLevelTwo
+            }), "SCP1356Chamber"),
+            new Tools.DoorSpawnData(new Vector3(-1.507f,37.225f,3.282001f), new Vector3(0,-40.313f,0), new Tools.DoorSeizable(Tools.DoorTypesCustom.EntranceDoor, 500f, new List<KeycardPermissions>()
+            {
+                KeycardPermissions.ContainmentLevelTwo,
+                KeycardPermissions.ArmoryLevelOne
+            }), "SCP1356Chamber"),
+            new Tools.DoorSpawnData(new Vector3(3.938f,37.225f,3.974002f), new Vector3(0,0,0), new Tools.DoorSeizable(Tools.DoorTypesCustom.EntranceDoor, 5000f, new List<KeycardPermissions>()
+            {
+                KeycardPermissions.ContainmentLevelThree,
+                KeycardPermissions.ArmoryLevelOne
+            }), "SCP1356Chamber"),
+            new Tools.DoorSpawnData(new Vector3(0,0,-3.13f), new Vector3(0,0,0), new Tools.DoorSeizable(Tools.DoorTypesCustom.EntranceDoor, 50f, new List<KeycardPermissions>()
+            {
+                KeycardPermissions.Checkpoints,
+            }), "SCP1356Chamber"),
+        };
+        
         [Description("Chance, dass SCP-1356 nach der Dekontamination ausbricht (maximal 100%)")]
         public int BreachChance { get; set; } = 100;
 
@@ -246,8 +273,8 @@ namespace SCP1356Main.Configs
         {
             new Tools.RagdollSpawnData(new Vector3(18.666f, 12.46896f, 6.287f), new Vector3(90, 66.466f, 0),
                 "Thomas Shelby", "Strahlung", RoleTypeId.FacilityGuard, RoomType.Lcz173),
-            new Tools.RagdollSpawnData(new Vector3(18.931f, 12.46896f, 9.255f), new Vector3(90, -128.184f, 0),
-                "John Pork", "Strahlung", RoleTypeId.ClassD, RoomType.Lcz173)
+            new Tools.RagdollSpawnData(new Vector3(0, 2, 0), new Vector3(90, -128.184f, 0),
+                "John Pork", "Strahlung", RoleTypeId.ClassD, "test")
         };
 
         [Description("Pickup-Spawner: Position, Rotation, ItemType")]

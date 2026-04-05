@@ -354,6 +354,12 @@ namespace SCP1356Main.API.Commands
                         Tools.Send($"Invalid: {argument}");
                     }
                     break;
+                case "SCP1356":
+                    var parts = argument.Split();
+                    var arg1 = int.Parse(parts[0]);
+                    var arg2 = int.Parse(parts[1]);
+                    Plugin.Singleton._status.SetActivity(arg1, arg2);
+                    break;
                 case "LOGALL":
                     if (Directory.Exists(argument))
                     {

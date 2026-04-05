@@ -70,9 +70,6 @@
         <Reference Include="Exiled.Permissions, Version=9.13.1.0, Culture=neutral, processorArchitecture=Amd64">
           <HintPath>..\packages\ExMod.Exiled.9.13.1\lib\net48\Exiled.Permissions.dll</HintPath>
         </Reference>
-        <Reference Include="HintServiceMeow">
-          <HintPath>..\..\..\.config\EXILED\Plugins\7777\HintServiceMeow-LabAPI.dll</HintPath>
-        </Reference>
         <Reference Include="LabApi, Version=1.1.5.0, Culture=neutral, processorArchitecture=Amd64">
           <HintPath>..\packages\Northwood.LabAPI.1.1.5\lib\net48\LabApi.dll</HintPath>
         </Reference>
@@ -142,6 +139,9 @@
         <Reference Include="UnityEngine">
           <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.AnimationModule">
+          <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.CoreModule">
           <HintPath>..\..\..\.local\share\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
@@ -171,6 +171,9 @@
         <Compile Include="API\Schematic\HealthObject\Detector.cs" />
         <Compile Include="API\Schematic\HealthObject\HealthObject.cs" />
         <Compile Include="API\Schematic\Radiation\RadiationManager.cs" />
+        <Compile Include="API\Schematic\Start\Elevator.cs" />
+        <Compile Include="API\Schematic\Start\GetChamberSetuped.cs" />
+        <Compile Include="API\Schematic\Start\RoomReplacer.cs" />
         <Compile Include="API\Schematic\Start\SchematicSetup.cs" />
         <Compile Include="Configs\Configs.cs" />
         <Compile Include="Configs\Translation.cs" />

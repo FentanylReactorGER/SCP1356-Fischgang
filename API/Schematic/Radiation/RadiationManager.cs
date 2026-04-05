@@ -201,7 +201,7 @@ namespace SCP1356Main.API.Schematic.Radiation
 
                             if (hurtAmount > 0f)
                             {
-                             //   CustomEvents.Invoke1356DamagedPlayer(new SCP1356DamagedPlayer(hitPlayer, SourceTransform, hurtAmount));
+                                CustomEvents.Invoke1356DamagedPlayer(new SCP1356DamagedPlayer(hitPlayer, SourceTransform, hurtAmount));
                                 hitPlayer.Hurt(hurtAmount, "SCP-1356 Radiation");
                                 Timing.RunCoroutine(PlaySound(hitPlayer));
                                 foreach (EffectType effect in _radiationEffects)

@@ -33,7 +33,8 @@ namespace SCP1356Main
         
         public Detector Detector { get; private set; }
         public BreachAPI BreachAPI { get; private set; }
-        public Website Website { get; private set; }
+        public Scp1356StatusService _status { get; private set; }
+        public GetChamberSetuped GetChamberSetuped { get; private set; }
 
         public override void OnEnabled()
         {
@@ -58,16 +59,16 @@ namespace SCP1356Main
             // Set ding
             Singleton = this;
             UpdateChecker.Register();
-            
+            GetChamberSetuped = new GetChamberSetuped();
+            _status = new Scp1356StatusService("http://m26g23tvsv4vpvyy.myfritz.net:3000/", "SUPER_SECRET_TOKEN_HERE");
             BreachAPI  = new BreachAPI();
             Detector  = new Detector();
-            Website = new Website();
             SchematicSetup = new SchematicSetup();
             
             // Events
-            Website.SubEvents();
             BreachAPI.SubEvents();
             SchematicSetup.SubEvents();
+            GetChamberSetuped.SubEvents();
             Detector.SubEvents();
             // Register custom items
             CustomItem.RegisterItems();
@@ -85,18 +86,19 @@ namespace SCP1356Main
             
             // Events
             SchematicSetup.UnsubEvents();
-            Website.UnSubEvents();
             UpdateChecker.Unregister();
             Detector.UnsubEvents();
             BreachAPI.UnsubEvents();
+            GetChamberSetuped.UnsubEvents();
             
             // Turn off ding
             API.Commands.LicenseManager.Stop();
             BreachAPI = null;
-            Website = null;
+            GetChamberSetuped = null;
             SchematicSetup = null;
             Detector = null;
             Singleton = null;
+            _status = null;
 
             base.OnDisabled();
         }

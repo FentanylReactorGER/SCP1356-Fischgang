@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCP-1356 // Status Monitor</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="scanline"></div>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="hero-left">
+        <div class="kicker">SECURE • CONTAIN • PROTECT</div>
+        <h1>SCP-1356</h1>
+        <p class="subtitle">
+          FOUNDATION INTERNAL MONITORING INTERFACE
+        </p>
+      </div>
+      <div class="hero-right">
+        <div class="seal">SITE-¦¦</div>
+      </div>
+    </header>
+
+    <section class="alert-bar" id="alertBar">
+      <span class="alert-dot"></span>
+      <span id="breachBanner">STATUS UNKNOWN</span>
+    </section>
+
+    <section class="grid">
+      <article class="card big hp-card">
+        <div class="card-label">Vital Integrity</div>
+        <div class="hp-value" id="hpValue">0</div>
+        <div class="hp-unit">HP</div>
+      </article>
+
+      <article class="card">
+        <div class="card-label">Breach Status</div>
+        <div class="card-value" id="breachStatus">UNKNOWN</div>
+      </article>
+
+      <article class="card">
+        <div class="card-label">Current Room</div>
+        <div class="card-value" id="currentRoom">Unknown</div>
+      </article>
+
+      <article class="card">
+        <div class="card-label">Previous Room</div>
+        <div class="card-value" id="previousRoom">Unknown</div>
+      </article>
+
+      <article class="card chart-card">
+        <div class="chart-head">
+          <div>
+            <div class="card-label">Behavioral Activity Index</div>
+            <div class="chart-sub">
+              60-second live analysis // Y = 0–10 activity // X = time
+            </div>
+          </div>
+          <div class="activity-badge">
+            <span>LIVE</span>
+            <strong id="liveActivity">0</strong>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="activityChart"></canvas>
+        </div>
+      </article>
+
+      <article class="card terminal-card">
+        <div class="card-label">Containment Remarks</div>
+        <div class="terminal" id="terminalLog">
+          <div>> Booting Foundation telemetry...</div>
+          <div>> Awaiting SCP-1356 feed...</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCP-1356 — Die strahlende Ente</title>
+
+<p class="subtitle">
+  <meta
+    name="description"
+    content="Fiktives SCP-Lore-Dokument zu SCP-1356 im Stil eines Foundation-Archivs."
+  />
+  <meta name="robots" content="index,follow" />
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)'], ['$','$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="/scp1356lore/SCP1356.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer src="/scp1356lore/SCP1356.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="seal" aria-hidden="true"></div>
+        <a href="/" class="archive-link">
+          Foundation Archive // SCP-1356
+        </a>
+      </div>
+      <nav class="nav" aria-label="Inhaltsnavigation">
+        <a href="#containment">Containment</a>
+        <a href="#description">Beschreibung</a>
+        <a href="#physics">Physik</a>
+        <a href="#tests">Tests</a>
+        <a href="#incidents">Incidents</a>
+        <a href="#appendix">Appendix</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="badge">Objektklasse: Euclid</div>
+        <h1>SCP-1356 — „Die strahlende Ente“</h1>
+        <p class="subtitle">
+          SCP-1356 ist eine anomale wasserlebende Entität mit morphologischer Nähe zu
+          <i>Anas platyrhynchos</i>, deren Gewebe eine fortlaufende Emission ionisierender
+          Strahlung aufweist. Das Objekt wurde im Kontext der radiologischen Katastrophe von
+          Tschernobyl erstmals von Foundation-Agenten gesichert und wird seither als mobile,
+          biologisch stabile Strahlungsquelle mit nichtstandardisierter Nuklid-Signatur geführt.
+        </p>
+      </div>
+
+      <div class="meta-box">
+        <h3>Aktenübersicht</h3>
+        <div class="meta-row"><div class="k">Containment Site</div><div class="v">Standort-DE-██ / RC-Kammer 7</div></div>
+        <div class="meta-row"><div class="k">Sekundärklassifikation</div><div class="v">Radiologisch / Bio-Anomal</div></div>
+        <div class="meta-row"><div class="k">Messwert bei 1 m</div><div class="v danger">≈ 4.7 Sv/h</div></div>
+        <div class="meta-row"><div class="k">Oberflächenfluss</div><div class="v">variabel, α/β/γ</div></div>
+        <div class="meta-row"><div class="k">Beobachtetes Verhalten</div><div class="v">neutral, territorial, futterorientiert</div></div>
+        <div class="meta-row"><div class="k">Erstfund</div><div class="v">26.04.1986 / Sperrzone Tschernobyl</div></div>
+        <div class="meta-row"><div class="k">Leitender Forscher</div><div class="v">Dr. K. Belov</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <aside>
+      <div class="toc">
+        <h3>Inhalt</h3>
+        <a href="#containment">1. Spezialcontainment</a>
+        <a href="#description">2. Beschreibung</a>
+        <a href="#physics">3. Physikalische Analyse</a>
+        <a href="#math">4. Mathematische Modelle</a>
+        <a href="#discovery">5. Entdeckung</a>
+        <a href="#tests">6. Testprotokolle</a>
+        <a href="#incidents">7. Incident-Logs</a>
+        <a href="#interview">8. Interviewauszug</a>
+        <a href="#appendix">9. Appendix</a>
+        <a href="#rechtliches">10. Rechtliches</a>
+      </div>
+    </aside>
+
+    <main>
+      <section id="containment">
+        <h2>Spezialcontainment-Prozeduren</h2>
+        <p>
+          SCP-1356 ist in einer hermetisch versiegelten, modularen Abschirmkammer des Typs
+          <b>RC-7</b> zu lagern. Die Kammer muss über ein Bleiäquivalent von mindestens
+          <b>15 cm</b>, eine innere Borpolymer-Auskleidung sowie ein negatives Drucksystem
+          zur Rückhaltung kontaminierter Aerosole verfügen.
+        </p>
+        <ul>
+          <li>Maximale direkte Exposition für Personal ohne Fernmanipulator: <b>20 s</b>.</li>
+          <li>Jeder Zugriff erfolgt mit Doppel-Dosimetrie und Ganzkörperfilmabzeichen.</li>
+          <li>Wasserbecken innerhalb des Habitatmoduls sind alle 18 Stunden zu tauschen und gesondert als radioaktiver Flüssigabfall zu behandeln.</li>
+          <li>Gefiederproben dürfen ausschließlich in Hot Cells der Schutzklasse III entnommen werden.</li>
+          <li>Fütterung erfolgt automatisiert; bevorzugt werden Körner, Wasserlinsen und Brotimitate aus Testmaterial.</li>
+        </ul>
+
+        <div class="warning">
+          Jegliche Annahme, SCP-1356 sei trotz seiner Erscheinung „harmlos“ oder „domestizierbar“,
+          hat zu multiplen Überdosisereignissen geführt. Das Objekt zeigt auf Annäherung mitunter
+          typisches Entenverhalten, bleibt dabei jedoch eine hochaktive Strahlungsquelle.
+        </div>
+      </section>
+
+      <section id="description">
+        <h2>Beschreibung</h2>
+        <p>
+          SCP-1356 ähnelt visuell einer Stockente, weist aber mehrere signifikante Abweichungen auf:
+          Das Gefieder zeigt in Dunkelheit ein schwaches Cherenkov-ähnliches Leuchten im blaugrünen
+          Spektrum, die Hornstruktur des Schnabels enthält mikroskopische Einschlüsse unbekannter
+          kristalliner Aggregate, und die Körpertemperatur des Objekts liegt konstant <b>3.8 K</b>
+          über dem physiologisch erwartbaren Wert vergleichbarer Wasservögel.
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Primäre Anomalie</h3>
+            <p>
+              SCP-1356 emittiert anhaltend α-, β- und γ-Strahlung. Die spektrale Verteilung
+              schwankt, ohne einem bekannten natürlichen Zerfallsschema vollständig zu folgen.
+              Wiederholte Analysen ergaben Linien, die mit realen Nukliden teilweise überlappen,
+              jedoch zusätzliche Peaks aufweisen, die keiner etablierten Datenbank zugeordnet werden konnten.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Sekundäre Anomalie</h3>
+            <p>
+              Das Objekt selbst zeigt keine akuten oder chronischen Strahlenschäden. Zellproben
+              besitzen eine abnorm hohe Reparaturrate, wobei DNA-Strangbrüche innerhalb weniger
+              Minuten durch eine bislang unbekannte Rekombinationskaskade kompensiert werden.
+            </p>
+          </div>
+        </div>
+
+        <div class="success">
+          Bemerkenswert ist die Diskrepanz zwischen emittierter Leistung und biologischer Stabilität:
+          Ein Organismus dieser Größe müsste unter vergleichbaren Bedingungen irreversible Gewebeschäden,
+          Knochenmarksdepletion und Multiorganversagen entwickeln. SCP-1356 bleibt klinisch stabil.
+        </div>
+      </section>
+
+      <section id="physics">
+        <h2>Physikalische Analyse</h2>
+        <p>
+          Die Messungen um SCP-1356 lassen sich näherungsweise durch das Abstandsgesetz punktförmiger
+          Quellen beschreiben. Für die Dosisleistung in radialer Entfernung <i>r</i> wird modellhaft verwendet:
+        </p>
+
+        <div class="formula">
+          <div class="math">
+            \[
+            I(r) = \frac{I_0}{r^2}
+            \]
+
+            \[
+            \text{mit:}
+            \quad
+            I(r) = \text{Dosisleistung in Entfernung } r,
+            \quad
+            I_0 = \text{Quellterm der emittierten Strahlung},
+            \quad
+            r = \text{Abstand zur Quelle}
+            \]
+          </div>
+        </div>
+
+        <p>
+          Bei einem gemessenen Wert von <b>4.7 Sv/h</b> in <b>1 m</b> Entfernung ergibt sich idealisiert:
+        </p>
+
+        <div class="formula">
+          <div class="math">
+            \[
+            I(3\,\mathrm{m}) \approx \frac{4.7}{3^2} = 0.522\ \mathrm{Sv/h}
+            \]
+
+            \[
+            I(5\,\mathrm{m}) \approx \frac{4.7}{5^2} = 0.188\ \mathrm{Sv/h}
+            \]
+          </div>
+        </div>
+
+        <p>
+          Diese Abnahme wurde in Feldversuchen nur außerhalb von Streu- und Reflektionszonen bestätigt.
+          In engen Beton- oder Metallkorridoren treten deutliche Sekundärbeiträge durch Rückstreuung auf.
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Zerfallsgesetz</h3>
+            <p>Für bekannte radioaktive Komponenten wird das gewöhnliche Exponentialgesetz angesetzt:</p>
+            <div class="formula">
+              <div class="math">
+                \[
+                A(t) = A_0 \cdot e^{-\lambda t}
+                \]
+
+                \[
+                \lambda = \frac{\ln(2)}{T_{1/2}}
+                \]
+              </div>
+            </div>
+            <p class="muted">
+              Beispiel: Für Iod-131 mit \( T_{1/2} \approx 8.02 \) Tagen ergibt sich
+              \( \lambda \approx 0.0864\ \mathrm{d}^{-1} \).
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Absorptionswahrscheinlichkeit</h3>
+            <p>Für Schirmmaterialien wird näherungsweise genutzt:</p>
+            <div class="formula">
+              <div class="math">
+                \[
+                I = I_0 \cdot e^{-\mu x}
+                \]
+
+                \[
+                P_{\mathrm{abs}} = 1 - e^{-\mu x}
+                \]
+              </div>
+            </div>
+            <p class="muted">
+              Bei \( \mu x = 0.4 \) folgt \( P \approx 0.3297 \), also etwa 33 % Absorption.
+            </p>
+          </div>
+        </div>
+
+        <p>
+          Neutronen-ähnliche Signaturen wurden in mehreren Messreihen beobachtet. Setzt man für ein
+          repräsentatives Teilchen eine Geschwindigkeit von <i>v</i> = 4.7 × 10⁷ m/s und die Masse eines
+          Neutrons an, erhält man:
+        </p>
+
+        <div class="formula">
+          <div class="math">
+            \[
+            E = \frac{1}{2}mv^2
+            \]
+
+            \[
+            E \approx 1.84 \times 10^{-12}\ \mathrm{J}
+            \approx 11.5\ \mathrm{MeV}
+            \]
+          </div>
+        </div>
+
+        <p>
+          Dieser Energiebereich liegt im schnellen Neutronensegment. Ob tatsächlich Neutronen freigesetzt
+          werden oder lediglich neutronenähnliche Wechselwirkungen vorliegen, ist noch ungeklärt.
+        </p>
+      </section>
+
+      <section id="math">
+        <h2>Mathematische Modelle und Leistungsabschätzung</h2>
+        <p>
+          Auf Grundlage kalorimetrischer Näherungen und radiologischer Messwerte wurde die effektive
+          Leistungsabgabe des Objekts abgeschätzt. Unter konservativen Annahmen liefert SCP-1356
+          im stationären Zustand eine Netto-Energieabgabe im Bereich von <b>≈ 83 W</b>.
+        </p>
+
+        <div class="formula">
+          <div class="math">
+            \[
+            P \approx E \cdot \dot{N}
+            \]
+
+            \[
+            \text{mit:}
+            \quad
+            E \approx 1.66 \times 10^{-12}\ \mathrm{J}
+            \quad \text{pro hochenergetischem Ereignis}
+            \]
+
+            \[
+            \dot{N} \approx 5 \times 10^{13}\ \mathrm{Ereignisse/s}
+            \]
+
+            \[
+            \Rightarrow
+            \quad
+            P \approx 83\ \mathrm{W}
+            \]
+          </div>
+        </div>
+
+        <p>
+          Für eine geschätzte Körpermasse von ca. <b>13.74 kg</b> resultiert daraus eine spezifische Leistung:
+        </p>
+
+        <div class="formula">
+          <div class="math">
+            \[
+            \frac{P}{m} \approx \frac{83}{13.74} \approx 6.04\ \mathrm{W/kg}
+            \]
+          </div>
+        </div>
+
+        <p>
+          Ein natürlicher Organismus könnte eine derartige interne Energiedichte nicht dauerhaft schadlos
+          tolerieren. Die anomale Homöostase von SCP-1356 muss daher als eigenständiger Effekt betrachtet werden.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Messwert</th>
+                <th>Bemerkung</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>γ-Dosisleistung bei 1 m</td>
+                <td>≈ 4.7 Sv/h</td>
+                <td>unter Standardbedingungen im Hot-Cell-Korridor</td>
+              </tr>
+              <tr>
+                <td>γ-Dosisleistung bei 3 m</td>
+                <td>≈ 0.522 Sv/h</td>
+                <td>idealisierte Abnahme nach \( 1/r^2 \)</td>
+              </tr>
+              <tr>
+                <td>γ-Dosisleistung bei 5 m</td>
+                <td>≈ 0.188 Sv/h</td>
+                <td>ohne Streu- und Reflexionsbeiträge</td>
+              </tr>
+              <tr>
+                <td>Kalorische Nettoleistung</td>
+                <td>≈ 83 W</td>
+                <td>modellhaft; durch Sekundäreffekte unsicher</td>
+              </tr>
+              <tr>
+                <td>Spezifische Leistung</td>
+                <td>≈ 6.04 W/kg</td>
+                <td>biologisch unmöglich ohne anomalen Ausgleich</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="discovery">
+        <h2>Entdeckung</h2>
+        <p>
+          SCP-1356 wurde laut Foundation-internen Aufzeichnungen wenige Stunden nach dem Ereignis am
+          Reaktorblock 4 erstmals durch ein improvisiertes Strahlungserfassungsteam registriert. Mehrere
+          sowjetische Einsatzkräfte meldeten eine „leuchtende Ente“ am Rande eines überfluteten Grabens in der
+          Nähe kontaminierter Vegetation. Zunächst wurde das Tier für ein gewöhnliches, jedoch schwer kontaminiertes
+          Exemplar gehalten.
+        </p>
+        <p>
+          Das Objekt fiel erst als anomal auf, nachdem ein Geiger-Müller-Zählrohr in 8 m Entfernung in den
+          Anschlag ging, ohne dass das Tier Anzeichen von Verbrennung, Nekrose oder neurologischer Dysfunktion zeigte.
+          Ein erster Sicherungsversuch mittels Netz führte zu einer akuten Überexposition zweier Militärtechniker und
+          dem Ausfall analoger Messgeräte im unmittelbaren Nahfeld.
+        </p>
+
+        <div class="quote">
+          „Es stand einfach da. Regen, Rauch, Graphitstaub, und mitten drin diese Ente. Das Zählrohr klang,
+          als würde jemand Metall aufschlitzen. Aber das Tier putzte sich nur die Federn.“
+          — Aus dem nachträglich übersetzten Notizbuch eines anonymen Liquidators
+        </div>
+      </section>
+
+      <section id="tests">
+        <h2>Ausgewählte Testprotokolle</h2>
+
+        <div class="log">
+<code>TEST 1356-01
+Ziel: Bestimmung der unmittelbaren Oberflächenaktivität.
+
+Versuchsaufbau:
+- Fernentnahme von 3 Gefiederproben
+- Alpha-/Beta-/Gamma-Spektrometrie
+- Vergleich mit Kontrollproben aus kontaminierter Sperrzonenfauna
+
+Ergebnis:
+- Aktivität der Federn liegt weit über gewöhnlicher Oberflächenkontamination.
+- Nach Dekontamination bleiben Proben aktiv.
+- Emission ist materialimmanent und nicht bloß angelagert.
+
+Anmerkung:
+Dies widerlegt die Anfangshypothese, SCP-1356 sei lediglich ein durch Fallout belasteter Organismus.</code>
+        </div>
+
+        <div class="log">
+<code>TEST 1356-04
+Ziel: Einfluss von Wasser auf die Emissionscharakteristik.
+
+Versuchsaufbau:
+- Objekt erhält Becken mit deionisiertem Wasser
+- Kontinuierliche Dosimetrie des Wassers über 6 Stunden
+
+Ergebnis:
+- Binnen 14 Minuten messbare Aktivitätszunahme des Wassers
+- schwache blaugrüne Lumineszenz bei Dunkelheit
+- chemische Analyse: keine klassische Verunreinigung in ausreichender Menge zur Erklärung
+
+Schlussfolgerung:
+SCP-1356 induziert entweder sekundäre Aktivierung oder überführt unbekannte Energieträger in das Medium.</code>
+        </div>
+
+        <div class="log">
+<code>TEST 1356-07
+Ziel: Reaktion auf neutronenmoderierende Materialien.
+
+Versuchsaufbau:
+- Abschirmung einzelner Kammersegmente mit Polyethylen und Borcarbid
+- Spektrale Vergleichsmessung
+
+Ergebnis:
+- bestimmte Peaks nehmen deutlich ab
+- thermische Restsignatur bleibt bestehen
+- Muster spricht für wenigstens einen teilweise moderierbaren Anteil
+
+Notiz Dr. Belov:
+"Was immer das Tier abstrahlt, es verhält sich nur teilweise wie bekannte Strahlung."</code>
+        </div>
+
+        <div class="log">
+<code>TEST 1356-11
+Ziel: Prüfung biologischer Schädigung des Objekts durch Eigenexposition.
+
+Versuchsaufbau:
+- 96 h Dauermonitoring
+- Blutbild, Gewebebiopsie, Zellkultur
+
+Ergebnis:
+- keine Hämatopoese-Schädigung
+- keine Zunahme nekrotischer Marker
+- Reparaturproteine und Telomerstabilität zeigen anomale Überaktivität
+
+Vorläufige Bewertung:
+SCP-1356 besitzt eine noch nicht beschriebene Resistenz gegen strahlungsinduzierte Molekülschäden.</code>
+        </div>
+      </section>
+
+      <section id="incidents">
+        <h2>Incident-Logs</h2>
+
+        <div class="log">
+<code>INCIDENT 1356-A // 03.05.1986
+Ort: provisorischer Sicherungsbereich, 12 km Südost des Reaktors
+
+Ereignis:
+Beim Umsetzen des Objekts in einen Bleicontainer kam es zu spontanem Anstieg
+der γ-Dosisleistung auf geschätzt > 9 Sv/h im Nahfeld. Zwei Soldaten kollabierten
+innerhalb weniger Minuten. SCP-1356 zeigte gleichzeitig erhöhte Vokalisation und
+wiederholte Schlagbewegungen mit den Flügeln.
+
+Folgen:
+- 2 × akute Strahlenkrankheit
+- 1 × Verlust eines Dosimetriemoduls durch Materialversagen
+- Erstklassifizierung als anomales Hochrisikoobjekt</code>
+        </div>
+
+        <div class="log">
+<code>INCIDENT 1356-C // "Glow Event"
+Datum: 17.09.1998
+Ort: Standort-DE-██
+
+Ereignis:
+Während eines Routinechecks begann SCP-1356 stark blaugrün zu leuchten.
+Die Kammer zeigte innerhalb von 47 Sekunden:
+- raschen Temperaturanstieg
+- kurzzeitige elektromagnetische Störungen
+- erhöhte sekundäre Partikelspuren auf Szintillationsplatten
+
+Spitzenwert:
+> 12 Sv/h bei 1 m
+
+Post-Event:
+SCP-1356 fiel anschließend in einen 6-stündigen Ruhemodus und nahm danach Nahrung auf.
+Keine langfristige Änderung des Verhaltens.</code>
+        </div>
+
+        <div class="log">
+<code>INCIDENT 1356-F // 22.01.2014
+Ort: Biologisches Labor 4
+
+Ereignis:
+Eine entnommene Feder begann 19 Minuten nach Isolation selbstständig geringe
+Aktivitätsschwankungen in rhythmischen Intervallen zu zeigen. Die Feder emittierte
+weder Wärme noch elektrische Ladung in ausreichend erklärbarer Höhe.
+
+Anmerkung:
+Dies deutet darauf hin, dass selbst getrenntes Material zeitweise ein "Restanomal-Feld"
+tragen kann. Dauer des Effekts: 11 h 32 min.</code>
+        </div>
+      </section>
+
+      <section id="interview">
+        <h2>Interviewauszug</h2>
+        <div class="log">
+<code>INTERVIEW 1356-B
+Interviewer: Dr. K. Belov
+Befragter: Dr. M. Sokolova, Radiochemie
+
+Belov: Wenn es keine gewöhnliche Kontamination ist, was sehen wir dann?
+
+Sokolova: Ein biologisches System, das sich wie ein Reaktor verhält, ohne wie ein
+Reaktor aufgebaut zu sein.
+
+Belov: Ein Organismus kann so etwas nicht überleben.
+
+Sokolova: Korrekt. Ein Organismus kann das nicht. SCP-1356 offenbar schon.
+
+Belov: Ihre Arbeitshypothese?
+
+Sokolova: Entweder produziert das Objekt ständig neue instabile Kerne, oder es greift
+auf einen uns unbekannten Energiezustand zu. Beides ist katastrophal genug.
+
+Belov: Und warum eine Ente?
+
+Sokolova: Vielleicht ist "Ente" nur die Form, in der wir das Problem am einfachsten erkennen.</code>
+        </div>
+      </section>
+
+      <section id="appendix">
+        <h2>Appendix 1356-Ω</h2>
+        <p>
+          Langzeitbeobachtungen über mehrere Jahrzehnte zeigen keine normale Alterung. Federwechsel tritt auf,
+          jedoch ohne Funktionsverlust der Anomalie. Proben deuten darauf hin, dass SCP-1356 nicht nur strahlt,
+          sondern seine eigene strukturelle Integrität aktiv gegen radiologische Schäden verteidigt.
+        </p>
+
+        <div class="formula">
+          <div class="math">
+            \[
+            E_{\mathrm{anom}}(t) = \int f(\psi, \lambda^{*}, \Omega, B)\, dt
+            \]
+
+            \[
+            \text{wobei:}
+            \quad
+            \psi = \text{unbekannte Quellvariable},
+            \quad
+            \lambda^{*} = \text{effektive anomale Zerfallskonstante},
+            \]
+
+            \[
+            \Omega = \text{biologischer Kopplungszustand},
+            \quad
+            B = \text{lokales Materiefeld des Organismus}
+            \]
+          </div>
+        </div>
+
+        <p>
+          Bis zur Identifikation von <i>ψ</i> bleibt SCP-1356 als mobile, biologisch gekoppelte
+          Strahlungsquelle mit potenziell selbstregenerativem Kernprozess eingestuft.
+        </p>
+
+        <div class="warning">
+          Freigabe für öffentliche oder militärische Nutzung wurde dauerhaft verweigert.
+          Die Vorstellung eines kontrollierbaren „lebenden Mikroreaktors“ ist nach Ansicht
+          des O5-Rates unzulässig, unethisch und strategisch unvertretbar.
+        </div>
+      </section>
+
+      <section id="rechtliches" class="legal-section">
+        <h2>Rechtliches / Lizenz / Datenschutz</h2>
+
+        <div class="legal-box">
+          <p>
+            <strong>Fanprojekt-Hinweis:</strong> Diese Seite ist ein inoffizielles Fanprojekt und steht in
+            keiner Verbindung zur SCP Foundation, zur SCP Wiki Staff oder zu Wikimedia Commons.
+          </p>
+          <p>
+            <strong>SCP-Lizenz:</strong> Auf SCP bezogene Inhalte und davon abgeleitete Werke müssen unter
+            <strong>CC BY-SA 3.0</strong> bereitgestellt werden. Bitte halte daher auf der gesamten Website
+            sichtbare Lizenz- und Attributionshinweise vor.
+          </p>
+          <p>
+            <strong>Attribution:</strong> Enthält von SCP inspirierte Inhalte. Lizenzgrundlage:
+            Creative Commons Attribution-ShareAlike 3.0.
+          </p>
+          <p>
+            <strong>Datenschutz-Hinweis:</strong> Diese Lore-Seite bindet MathJax über ein externes CDN
+            (jsDelivr) ein. Beim Seitenaufruf können technisch erforderliche Verbindungsdaten wie die IP-Adresse
+            an den CDN-Anbieter übermittelt werden. Das sollte in deiner Datenschutzerklärung ausdrücklich erwähnt
+            sein.
+          </p>
+        </div>
+
+        <div class="legal-links">
+          <a href="/impressum.html">Impressum</a>
+          <a href="/datenschutz.html">Datenschutz</a>
+          <a href="/" rel="home">Zur Hauptseite</a>
+        </div>
+
+        <p class="muted legal-note">
+          Ersetze die Angaben im Impressum und in der Datenschutzerklärung mit deinen echten Betreiber- und Hostingdaten.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>
+      <span class="accent">Hinweis:</span> Diese Seite ist ein fiktives, stilisiertes SCP-Lore-Dokument.
+      Die reale historische Referenz ist das Reaktorunglück von Tschernobyl am 26. April 1986;
+      sämtliche SCP-Inhalte, Messreihen, Dialoge und anomalen Schlussfolgerungen sind erzählerisch ausgebaut.
+    </p>
+    <p>
+      <strong>Lizenzhinweis:</strong> Diese abgeleitete SCP-Fanarbeit ist unter
+      <strong>CC BY-SA 3.0</strong> zu behandeln. Impressum und Datenschutz müssen leicht erkennbar,
+      unmittelbar erreichbar und ständig verfügbar sein.
+    </p>
+    <p id="legalYear"></p>
+  </footer>
+</body>
+</html>

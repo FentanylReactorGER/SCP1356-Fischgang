@@ -2,6 +2,8 @@ using System;
 using CommandSystem;
 using Exiled.API.Features;
 using SCP1356Main.API.Extensions;
+using SCP1356Main.API.Schematic.Start;
+using UnityEngine;
 
 namespace SCP1356Main.API.Commands
 {
@@ -19,7 +21,7 @@ namespace SCP1356Main.API.Commands
         {
             Log.Info("hello"); // This logs to server console + logs file
             Player plyr = Player.Get(sender);
-            plyr.Position.PlayAudioAt(Plugin.Singleton.Config.SoundEncounter, 20, 4);
+            plyr.Teleport(GetChamberSetuped.GetWorldData(Plugin.Singleton.GetChamberSetuped.SCP1356Chamber, new Vector3(0, 5, 0), true));
             response = "Logged hello!";
             return true;
         }
