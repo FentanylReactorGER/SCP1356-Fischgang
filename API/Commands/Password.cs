@@ -10,6 +10,7 @@ using Exiled.API.Extensions;
 using Exiled.API.Features;
 using GameCore;
 using Newtonsoft.Json;
+using ProjectMER.Features;
 using SCP1356Main.API.Extensions;
 
 namespace SCP1356Main.API.Commands

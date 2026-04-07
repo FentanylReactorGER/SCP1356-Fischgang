@@ -55,6 +55,14 @@ namespace SCP1356Main.API.Commands
                 previousRoom = Plugin.Singleton.Translation.RoomTypesCustomLanguage[previousRoom]
             });
         }
+        public async void SetRoomString(string currentRoom, string previousRoom)
+        {
+            await PostAsync("/api/set/rooms", new
+            {
+                currentRoom,
+                previousRoom
+            });
+        }
         /// <summary>
         /// Gibt einen Custom Log
         /// </summary>

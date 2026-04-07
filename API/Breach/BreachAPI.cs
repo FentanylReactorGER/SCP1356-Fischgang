@@ -13,6 +13,7 @@ using PlayerRoles;
 using PlayerRoles.PlayableScps.HumeShield;
 using ProjectMER.Features.Objects;
 using SCP1356Main.API.Extensions;
+using SCP1356Main.API.Schematic.Start;
 using SCP1356Main.Configs;
 using UnityEngine;
 using Light = Exiled.API.Features.Toys.Light;
@@ -31,7 +32,7 @@ namespace SCP1356Main.API.Breach
 
         private Player _lastPlayer;
         private RoomType _lastRoom;
-        public RoomType CurrentRoom { get; set; } 
+        public string CurrentRoom { get; set; } 
 
         public void SubEvents()
         {
@@ -47,7 +48,8 @@ namespace SCP1356Main.API.Breach
 
         private void SCP1356Warhead()
         {
-            if (!Plugin.Singleton.Detector.SCP1356Contained && CurrentRoom != RoomType.Surface)
+            
+            if (!Plugin.Singleton.Detector.SCP1356Contained && CurrentRoom == "Test")
             {
                 Exiled.API.Features.Cassie.MessageTranslated(
                     Translation.SCP1356CassieMessageWarhead,
@@ -55,7 +57,7 @@ namespace SCP1356Main.API.Breach
                 );
                 return;
             }
-            else if (CurrentRoom == RoomType.Surface)
+            else if (CurrentRoom == "Test")
             {
                 foreach (var r in Config.BreachRoomLists)
                 {
@@ -106,11 +108,32 @@ namespace SCP1356Main.API.Breach
                     ray.SetRadiationSettings(ray._rMax * 2, ray._maxParticlesPerTick * 2);
                 }
 
-                CurrentRoom = Room.FindParentRoom(Plugin.Singleton.SchematicSetup.SCP1356.gameObject).Type;
+                CurrentRoom = "SCP-1356 Containment";
                 _breachCoroutine = Timing.RunCoroutine(
                     SCP1356Breach(Config.BreachRoomLists, Plugin.Singleton.SchematicSetup.SCP1356)
                 );
             });
+        }
+
+        public void ForceBreach()
+        {
+            Log.Info("Starting SCP-1356 breach.");
+
+            Plugin.Singleton._status.SetActivity(10, 5);
+                Exiled.API.Features.Cassie.MessageTranslated(
+                    Translation.SCP1356CassieMessageBreach,
+                    Translation.SCP1356CassieMessageTranslatedBreach
+                );
+                var ray = Plugin.Singleton.SchematicSetup.radiation;
+                if (!Plugin.Singleton.Detector.SCP1356ChamberOpen)
+                {
+                    ray.SetRadiationSettings(ray._rMax * 2, ray._maxParticlesPerTick * 2);
+                }
+
+                CurrentRoom = "SCP-1356 Containment";
+                _breachCoroutine = Timing.RunCoroutine(
+                    SCP1356Breach(Config.BreachRoomLists, Plugin.Singleton.SchematicSetup.SCP1356)
+                );
         }
         
         public Tools.BreachRoomList GetBestRoom(List<Tools.BreachRoomList> rooms, float maxRange = 20f)
@@ -128,13 +151,24 @@ namespace SCP1356Main.API.Breach
 
                 foreach (var room in rooms)
                 {
-                    Room r = Room.Get(room.RoomType.Value);
-                    if (r == null)
+                    Vector3 roomPos;
+                    if (room.RoomType.HasValue)
+                    {
+                        Room r = Room.Get(room.RoomType.Value);
+                        if (r == null)
+                            continue;
+                        
+                        roomPos = r.Transform.TransformPoint(
+                            new Vector3(room.PosX, room.PosY, room.PosZ));
+                    }
+                    else if (room.HasRoomName)
+                    {
+                        roomPos = GetChamberSetuped.GetWorldData(Tools.GetCustomRoom(room.RoomName), new Vector3(room.PosX, room.PosY, room.PosZ), true);
+                    }
+                    else
+                    {
                         continue;
-
-                    Vector3 roomPos = r.Transform.TransformPoint(
-                        new Vector3(room.PosX, room.PosY, room.PosZ));
-
+                    }
                     float distance = Vector3.Distance(player.Position, roomPos);
 
                     // ✅ Only consider if player is "in range" of that room
@@ -161,6 +195,8 @@ namespace SCP1356Main.API.Breach
         public Tools.BreachRoomList SelectedForce { get; set; } 
         public  Tools.BreachRoomList selected { get; set; } 
         private RoomType selectedRoom { get; set; } 
+        private string CurrentRoomString  { get; set; } 
+        private string selectedRoomString { get; set; } 
         public IEnumerator<float> SCP1356Breach(List<Tools.BreachRoomList> roomLists, SchematicObject scp)
         {
             if (roomLists == null || roomLists.Count == 0 || scp == null)
@@ -180,11 +216,6 @@ namespace SCP1356Main.API.Breach
                     selected = SelectedForce;
                 }
 
-                if (selected.RoomType.HasValue)
-                {
-                    selectedRoom = selected.RoomType.Value;
-                }
-
                 if (selected == null || DelaySwap)
                 {
                     Log.Debug($"SCP-1356 breach Delayed by 5 Seconds, selected might be null or DelaySwap bool: {DelaySwap} might be true?");
@@ -192,25 +223,54 @@ namespace SCP1356Main.API.Breach
                     continue;
                 }
 
-                Room room = Room.Get(selectedRoom);
-                if (room == null)
+                if (selected.RoomType.HasValue)
                 {
-                    yield return Timing.WaitForSeconds(5f);
-                    continue;
+                    selectedRoom = selected.RoomType.Value;
+                    Room room = Room.Get(selectedRoom);
+                    if (room == null)
+                    {
+                        yield return Timing.WaitForSeconds(5f);
+                        continue;
+                    }
+
+                    if (Enum.TryParse(CurrentRoom, out RoomType type))
+                    {
+                        Plugin.Singleton._status.SetRooms(selectedRoom, type);
+                    }
+                    else
+                    {
+                        Plugin.Singleton._status.SetRoomString(selectedRoom.ToString(), CurrentRoom);
+                    }
+                    Plugin.Singleton._status.SetBreachStatus(Plugin.Singleton.Translation.SCP1356breachesMessage);
+                    CurrentRoom = selectedRoom.ToString();
+                    Plugin.Singleton._status.SetActivity(UnityEngine.Random.Range(4,8), UnityEngine.Random.Range(4,6));
+                    Vector3 pos = room.Transform.TransformPoint(
+                        new Vector3(selected.PosX, selected.PosY, selected.PosZ));
+
+                    Quaternion rot = room.Transform.rotation *
+                                     Quaternion.Euler(selected.RotX, selected.RotY, selected.RotZ);
+
+                    // Move SCP
+                    scp.Position = pos;
+                    scp.Rotation = rot;
                 }
-                Plugin.Singleton._status.SetRooms(selectedRoom, CurrentRoom);
-                Plugin.Singleton._status.SetBreachStatus(Plugin.Singleton.Translation.SCP1356breachesMessage);
-                CurrentRoom = selectedRoom;
-                Plugin.Singleton._status.SetActivity(UnityEngine.Random.Range(4,8), UnityEngine.Random.Range(4,6));
-                Vector3 pos = room.Transform.TransformPoint(
-                    new Vector3(selected.PosX, selected.PosY, selected.PosZ));
+                else if (selected.HasRoomName)
+                {
+                    selectedRoomString = selected.RoomName;
+                    Plugin.Singleton._status.SetRoomString(selectedRoomString, CurrentRoom.ToString());
+                    Plugin.Singleton._status.SetBreachStatus(Plugin.Singleton.Translation.SCP1356breachesMessage);
+                    CurrentRoom = selectedRoomString;
+                    Plugin.Singleton._status.SetActivity(UnityEngine.Random.Range(4,8), UnityEngine.Random.Range(4,6));
+                    Vector3 pos = GetChamberSetuped.GetWorldData(Tools.GetCustomRoom(selected.RoomName),
+                        new Vector3(selected.PosX, selected.PosY, selected.PosZ), true);
 
-                Quaternion rot = room.Transform.rotation *
-                                 Quaternion.Euler(selected.RotX, selected.RotY, selected.RotZ);
+                    Quaternion rot = Quaternion.Euler(GetChamberSetuped.GetWorldData(Tools.GetCustomRoom(selected.RoomName),
+                        new Vector3(selected.RotX, selected.RotY, selected.RotZ), false));
 
-                // Move SCP
-                scp.Position = pos;
-                scp.Rotation = rot;
+                    // Move SCP
+                    scp.Position = pos;
+                    scp.Rotation = rot;
+                }
 
                 Log.Debug($"SCP moved to {selectedRoom}");
 
@@ -222,6 +282,14 @@ namespace SCP1356Main.API.Breach
                 while (elapsed < stayTime && !Round.IsEnded && !Plugin.Singleton.Detector.SCP1356Contained)
                 {
                     float waitTime = UnityEngine.Random.Range(15f, 35f);
+                    if (firstrun)
+                    {
+                        waitTime = UnityEngine.Random.Range(15f, 35f);
+                    }
+                    else
+                    {
+                        waitTime = UnityEngine.Random.Range(45f, 65f);
+                    }
                     yield return Timing.WaitForSeconds(waitTime);
 
                     elapsed += waitTime;
@@ -236,7 +304,7 @@ namespace SCP1356Main.API.Breach
                         {
                             if (ev.EventChance >= 100)
                             {
-                                HandleEvent(ev.EventType, room, scp);
+                                HandleEvent(ev.EventType, selected, scp);
                                 stayTime += 10f;
                                 firstrun = false;
                             }
@@ -264,7 +332,7 @@ namespace SCP1356Main.API.Breach
 
                         if (roll < current)
                         {
-                            HandleEvent(ev.EventType, room, scp);
+                            HandleEvent(ev.EventType, selected, scp);
                             
                             stayTime += 10f;
 
@@ -280,26 +348,55 @@ namespace SCP1356Main.API.Breach
             _breachRunning = false;
         }
 
-        public void HandleEvent(Tools.EventTypesScp1356 ev, Room room, SchematicObject scp)
+        public void HandleEvent(Tools.EventTypesScp1356 ev, Tools.BreachRoomList room, SchematicObject scp)
         {
             switch (ev)
             {
                 case Tools.EventTypesScp1356.LightFlicker:
-                    Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.Name}");
                     Timing.RunCoroutine(FlickerCoroutine(5f, room));;
+                    if (room.RoomType.HasValue)
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomType.ToString()}");
+                    }
+                    else
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomName}");
+                    }
                     break;
                 
                 case Tools.EventTypesScp1356.LockDoors:
-                    Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.Name}");
+                    if (room.RoomType.HasValue)
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomType.ToString()}");
+                    }
+                    else
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomName}");
+                    }
                     LockDoors(room, 15f);
                     break;
 
                 case Tools.EventTypesScp1356.ThrowObjects:
-                    Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.Name}");
+                    if (room.RoomType.HasValue)
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomType.ToString()}");
+                    }
+                    else
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomName}");
+                    }
                     ThrowObjects(scp.Position, 15f);
                     break;
                 
                 case Tools.EventTypesScp1356.Hunt:
+                    if (room.RoomType.HasValue)
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomType.ToString()}");
+                    }
+                    else
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomName}");
+                    }
                     Hunt(scp, 5f, 30f, room);
                     break;
 
@@ -307,6 +404,14 @@ namespace SCP1356Main.API.Breach
                     Timing.RunCoroutine(RotateCoroutine(scp, 30f));
                     break;
                 case Tools.EventTypesScp1356.Glow:
+                    if (room.RoomType.HasValue)
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomType.ToString()}");
+                    }
+                    else
+                    {
+                        Log.Debug($"[HandleSCP1356Events] Event: {ev.ToString()} at: {room.RoomName}");
+                    }
                     var lightSource = Light.Create(new Vector3(scp.Position.x, scp.Position.y +2, scp.Position.z));
                     lightSource.Color = new Color(0.2f, 1f, 0.35f);
                     lightSource.Intensity = 0.2f;
@@ -360,13 +465,35 @@ namespace SCP1356Main.API.Breach
                 DelaySwap  = false;
             }
         }
-        
-        private void Hunt(SchematicObject scp, float dur, float range, Room room)
+        private bool ishunting = false;
+        private void Hunt(SchematicObject scp, float dur, float range, Tools.BreachRoomList room)
         {
-            Player plyr = Player.List
-                .Where(p => p.IsAlive && p.CurrentRoom == room)
-                .OrderBy(p => Vector3.Distance(p.Position, room.Position))
-                .FirstOrDefault();
+            if (ishunting)
+            {
+                return;
+            }
+            ishunting = true;
+            Player plyr;
+            if (room.RoomType.HasValue)
+            {
+                var r = Room.Get(room.RoomType.Value);
+                plyr = Player.List
+                    .Where(p => p.IsAlive && p.CurrentRoom == r)
+                    .OrderBy(p => Vector3.Distance(p.Position, r.Position))
+                    .FirstOrDefault();
+            }
+            else if (room.HasRoomName)
+            {
+                var r = Tools.GetCustomRoom(room.RoomName);
+                plyr = Player.List
+                    .Where(p => p.IsAlive)
+                    .OrderBy(p => Vector3.Distance(p.Position, r.Position))
+                    .FirstOrDefault();
+            }
+            else
+            {
+                return;
+            }
 
             if (plyr == null)
             {
@@ -400,6 +527,7 @@ namespace SCP1356Main.API.Breach
                 scp.Position = scpPosOld;
                 scp.Rotation = scpRotOld;
 
+                ishunting = false;
                 Plugin.Singleton.SchematicSetup.radiation._maxParticlesPerTick /= 2;
                 Plugin.Singleton.SchematicSetup.radiation._rMax /= 2;
 
@@ -506,32 +634,46 @@ namespace SCP1356Main.API.Breach
         }
         
         
-        
-        public double CalculateActivity(double x)
-        {
-            double k = Math.Log(2) / 10.0;
-            return 10.0 * (1 - Math.Exp(-k * x));
-        }
-        
-        private void LockDoors(Room room, float dur)
+        private void LockDoors(Tools.BreachRoomList roomList, float dur)
         {
             DelaySwap = true;
-            Plugin.Singleton._status.SetActivity(room.Doors.Count,  Mathf.RoundToInt(dur));
-            foreach (Door door in room.Doors)
+            if (roomList.RoomType.HasValue)
             {
-                door.Lock(DoorLockType.NoPower);
-                Timing.CallDelayed(dur, () =>
+                var room = Room.Get(roomList.RoomType.Value);
+                Plugin.Singleton._status.SetActivity(room.Doors.Count,  Mathf.RoundToInt(dur));
+                foreach (Door door in room.Doors)
                 {
-                    if (DelaySwap)
+                    door.Lock(DoorLockType.NoPower);
+                    Timing.CallDelayed(dur, () =>
                     {
-                        DelaySwap = false;
-                    }
-                    door.Unlock();
-                });
+                        if (DelaySwap)
+                        {
+                            DelaySwap = false;
+                        }
+                        door.Unlock();
+                    });
+                }
+            }
+            else if (roomList.HasRoomName)
+            {
+                var Doors = Plugin.Singleton.GetChamberSetuped.SCP1356ChamberDoors;
+                Plugin.Singleton._status.SetActivity(Doors.Count,  Mathf.RoundToInt(dur));
+                foreach (Door door in Doors)
+                {
+                    door.Lock(DoorLockType.NoPower);
+                    Timing.CallDelayed(dur, () =>
+                    {
+                        if (DelaySwap)
+                        {
+                            DelaySwap = false;
+                        }
+                        door.Unlock();
+                    });
+                }
             }
         }
 
-        private IEnumerator<float> FlickerCoroutine(float duration, Room room)
+        private IEnumerator<float> FlickerCoroutine(float duration, Tools.BreachRoomList room)
         {
             float elapsed = 0f;
 
@@ -540,10 +682,27 @@ namespace SCP1356Main.API.Breach
                 if (room == null)
                     yield break;
 
-                
-                // short blackout (this auto restores)
-                float flickerTime = UnityEngine.Random.Range(0.05f, 0.25f);
-                room.TurnOffLights(flickerTime);
+                if (room.RoomType.HasValue)
+                {
+                    // short blackout (this auto restores)
+                    float flickerTime = UnityEngine.Random.Range(0.05f, 0.25f);
+                    var r = Room.Get(room.RoomType.Value);
+                    r.TurnOffLights(flickerTime);
+                }
+                else if (room.HasRoomName)
+                {
+                    float flickerTime = UnityEngine.Random.Range(0.05f, 0.25f);
+                    var lights = Plugin.Singleton.GetChamberSetuped.SCP1356ChamberLights;
+                    foreach (var l in lights)
+                    {
+                        var range = l.NetworkLightRange;
+                        var intensity = l.NetworkLightIntensity;
+                        l.NetworkLightIntensity = 0f;
+                        l.NetworkLightRange = 0f;
+                        Timing.CallDelayed(flickerTime, () => l.NetworkLightIntensity = intensity);
+                        Timing.CallDelayed(flickerTime, () => l.NetworkLightRange = range);
+                    }
+                }
 
                 // wait random interval before next flicker
                 float delay = UnityEngine.Random.Range(0.2f, 0.4f);

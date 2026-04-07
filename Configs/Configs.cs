@@ -22,10 +22,9 @@ namespace SCP1356Main.Configs
         [Description("Debug-Nachrichten anzeigen")]
         public bool Debug { get; set; } = true;
 
-        public string LicenseKey { get; set; } = "MEIN-LIZENZKEY-123";
+        public string LicenseKey { get; set; } = "59CoSG8pRAsTt-P9q9DeZrdXQa4YG6L_";
         [Description("ÄNDERE DIES ZU DEINER DOMAIN (Wichtig für Server die einen DNS-Service nutzten)")]
-        public string ServerDomain { get; set; } = "";
-        public string ApiBaseUrl { get; set; } = "http://m26g23tvsv4vpvyy.myfritz.net:4000";
+        public string ServerDomain { get; set; } = "scpsl.ducktales.online";
         public string SharedSecret { get; set; } = "Public-Key-AjHs)2aPPsa3Kan";
   
         public int CheckIntervalSeconds { get; set; } = 300;
@@ -121,6 +120,18 @@ namespace SCP1356Main.Configs
                 new()
                 {
                     new Tools.BreachRoomEventTypes(Tools.EventTypesScp1356.LockDoors, 30),
+                    new Tools.BreachRoomEventTypes(Tools.EventTypesScp1356.LightFlicker, 30),
+                }),
+            new Tools.BreachRoomList(new Vector3(1.618f, 0.146f, -3.476f), new Vector3(0, 0, 0), "SCP1356Chamber",
+                new()
+                {
+                    new Tools.BreachRoomEventTypes(Tools.EventTypesScp1356.Hunt, 30),
+                    new Tools.BreachRoomEventTypes(Tools.EventTypesScp1356.LightFlicker, 30),
+                }),
+            new Tools.BreachRoomList(new Vector3(-0.609f, 37.739f, 9.37f), new Vector3(0, 40, 0), "SCP1356Chamber",
+                new()
+                {
+                    new Tools.BreachRoomEventTypes(Tools.EventTypesScp1356.Hunt, 30),
                     new Tools.BreachRoomEventTypes(Tools.EventTypesScp1356.LightFlicker, 30),
                 }),
             new Tools.BreachRoomList(new Vector3(1.77f, -0.489f, -10.09f), new Vector3(0, 135, 0), RoomType.EzGateB,

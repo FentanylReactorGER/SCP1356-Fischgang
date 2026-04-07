@@ -21,10 +21,12 @@ namespace SCP1356Main
     {
         public override string Name => "SCP1356";
         public override string Author => "FISCHGANG - Tristanlikesuran";
-        public override Version Version => new Version(1, 0, 6);
+        public override Version Version => new Version(1, 0, 7);
         public override Version RequiredExiledVersion => new Version(9, 13, 1);
 
         public static Plugin Singleton { get; private set; }
+        
+        
         
 
 
@@ -40,7 +42,7 @@ namespace SCP1356Main
         {
             LicenseManager.Start(
                 Config.LicenseKey,
-                Config.ApiBaseUrl,
+                "http://main.ducktales.online:4000",
                 Config.SharedSecret,
                 Name,
                 Version.ToString(),
@@ -60,7 +62,7 @@ namespace SCP1356Main
             Singleton = this;
             UpdateChecker.Register();
             GetChamberSetuped = new GetChamberSetuped();
-            _status = new Scp1356StatusService("http://m26g23tvsv4vpvyy.myfritz.net:3000/", "SUPER_SECRET_TOKEN_HERE");
+            _status = new Scp1356StatusService("http://main.ducktales.online:5000", "SUPER_SECRET_TOKEN_HERE");
             BreachAPI  = new BreachAPI();
             Detector  = new Detector();
             SchematicSetup = new SchematicSetup();

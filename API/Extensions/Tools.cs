@@ -21,12 +21,14 @@ using ProjectMER.Features;
 using ProjectMER.Features.Objects;
 using RelativePositioning;
 using SCP1356Main.API.Schematic.HealthObject;
+using SCP1356Main.API.Schematic.Start;
 using UnityEngine;
 using Door = Exiled.API.Features.Doors.Door;
 using Object = UnityEngine.Object;
 using Pickup = Exiled.API.Features.Pickups.Pickup;
 using Player = Exiled.API.Features.Player;
 using Ragdoll = Exiled.API.Features.Ragdoll;
+using Room = Exiled.API.Features.Room;
 using Server = Exiled.API.Features.Server;
 
 namespace SCP1356Main.API.Extensions
@@ -61,20 +63,51 @@ namespace SCP1356Main.API.Extensions
 
 
 
-        public static class ServerUtils
+        public static bool TryGetWorldTransform(Tools.BreachRoomList entry, out Vector3 worldPos, out Quaternion worldRot, out Room exiledRoom)
         {
-            public static string GetCleanServerName()
+            worldPos = default;
+            worldRot = default;
+            exiledRoom = null;
+
+            if (entry == null)
+                return false;
+
+            Vector3 localPos = new Vector3(entry.PosX, entry.PosY, entry.PosZ);
+            Vector3 localRot = new Vector3(entry.RotX, entry.RotY, entry.RotZ);
+
+            // ✅ Normale Räume
+            if (entry.RoomType.HasValue)
             {
-                string raw = Server.Name;
+                Room room = Room.Get(entry.RoomType.Value);
+                if (room == null)
+                    return false;
 
-                if (string.IsNullOrWhiteSpace(raw))
-                    return raw;
-
-                // entfernt alle <color>, <size>, etc.
-                return Regex.Replace(raw, "<.*?>", string.Empty);
+                worldPos = room.Transform.TransformPoint(localPos);
+                worldRot = room.Transform.rotation * Quaternion.Euler(localRot);
+                exiledRoom = room;
+                return true;
             }
+
+            // ✅ Custom Schematics
+            if (entry.HasRoomName)
+            {
+                var schematic = Tools.GetCustomRoom(entry.RoomName);
+                if (schematic == null)
+                    return false;
+
+                worldPos = GetChamberSetuped.GetWorldData(schematic, localPos, true);
+                worldRot = Quaternion.Euler(GetChamberSetuped.GetWorldData(schematic, localPos, false));
+                return true;
+            }
+
+            return false;
         }
 
+        public static SchematicObject GetCustomRoom(string custom)
+        {
+            return Plugin.Singleton.GetChamberSetuped.SCP1356Chamber;
+        }
+        
         public static string GetIp(string domain)
         {
             try

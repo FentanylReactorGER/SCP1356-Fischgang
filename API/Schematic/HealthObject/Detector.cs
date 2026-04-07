@@ -56,7 +56,7 @@ namespace SCP1356Main.API.Schematic.HealthObject
                 var s = Plugin.Singleton;
                 int value = Mathf.RoundToInt(UnityEngine.Random.Range(1f, ev.Damage));
                 s._status.SetActivity(value, 2);
-                Timing.RunCoroutine(CoolDown(2f));
+                Timing.RunCoroutine(CoolDown(1f));
             }
         }
 

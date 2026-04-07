@@ -81,6 +81,7 @@ namespace SCP1356Main.API.Schematic.Start
         
         private void OnGenerated()
         {
+          //  Log.Debug(Room.Get(RoomType.HczTestRoom).Doors.Count);
             SCP1356Chamber = RoomReplacer.ReplaceRoom(_config.SCP1356ChambersRoomType, _config.SCP1356ChamberName, _config.SCP1356ChambersPos, _config.SCP1356ChambersRot);
             
         }
@@ -250,17 +251,6 @@ namespace SCP1356Main.API.Schematic.Start
                 Timing.CallDelayed(1f, () =>
                 
                 {
-                    var doors = Door.List
-                        .Where(d => Vector3.Distance(d.Position, SCP1356Chamber.Position) <= 20f)
-                        .ToList();
-                    foreach (var d in doors)
-                    {
-                        if (!SCP1356ChamberDoors.Contains(d))
-                        {
-                            SCP1356ChamberDoors.Add(d);
-                        }
-                    }
-                    SCP1356ChamberLights =  ev.Schematic.GetComponentsInChildren<LightSourceToy>().ToList();
                     var transforms = ev.Schematic.GetComponentsInChildren<Transform>();
                     foreach (var transform in transforms)
                     {
@@ -268,19 +258,19 @@ namespace SCP1356Main.API.Schematic.Start
                         {
                             case "Main Elevator":
                                 Elevator.ElvMovement = transform.GetComponent<Animator>();
-                                Log.Debug("Animator gefunden Main Elevator");
+                                Log.Debug(transform.name);
                                 break;
                             case "Car":
                                 Elevator.Cabin = transform.GetComponent<Animator>();
-                                Log.Debug("Animator gefunden Car");
+                                Log.Debug(transform.name);
                                 break;
                             case "1":
                                 Elevator.DoorDownController = transform.GetComponent<Animator>();
-                                Log.Debug("Animator gefunden 1");
+                                Log.Debug(transform.name);
                                 break;
                             case "2":
                                 Elevator.DoorUpController = transform.GetComponent<Animator>();
-                                Log.Debug("Animator gefunden 2");
+                                Log.Debug(transform.name);
                                 break;
                         }
 
@@ -296,7 +286,7 @@ namespace SCP1356Main.API.Schematic.Start
 
                             if (animator != null)
                             {
-                                Log.Debug("Animator gefunden! Im Transform");
+                                Log.Debug("Animator gefunden! Im Lever");
                                 LeverAnimator = animator;
                                 animator.Play("LeverToggleOff");
 

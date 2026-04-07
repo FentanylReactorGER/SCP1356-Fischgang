@@ -1,15 +1,21 @@
+using System;
 using System.Collections.Generic;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Player;
+using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.Arguments.ServerEvents;
 using LabApi.Features.Wrappers;
 using MEC;
 using ProjectMER.Events.Arguments;
+using ProjectMER.Features.Objects;
+using SCP1356Main.API.Commands;
 using SCP1356Main.API.Extensions;
 using UnityEngine;
 using Pickup = Exiled.API.Features.Pickups.Pickup;
 using Player = Exiled.API.Features.Player;
+using Round = Exiled.API.Features.Round;
+using Server = Exiled.API.Features.Server;
 
 namespace SCP1356Main.API.Schematic.Start
 {
@@ -36,6 +42,8 @@ namespace SCP1356Main.API.Schematic.Start
         
         public Speaker ElvSpeakerMovement  { get; set; }
         
+        public SchematicObject Elv { get; set; }
+        
         private bool IsRunning { get; set; }
         public void SubEvents()
         {
@@ -50,18 +58,117 @@ namespace SCP1356Main.API.Schematic.Start
             Exiled.Events.Handlers.Server.RoundStarted -= Roundstarted;
         }
 
-        private void Roundstarted()
+     private void Roundstarted()
+{
+    if (PlayerTransform == null)
+    {
+        Log.Error("[Elevator] PlayerTransform is null in Roundstarted()");
+        return;
+    }
+
+    if (DoorUpController == null)
+    {
+        Log.Error("[Elevator] DoorUpController is null in Roundstarted()");
+        return;
+    }
+
+    if (DoorDownController == null)
+    {
+        Log.Error("[Elevator] DoorDownController is null in Roundstarted()");
+        return;
+    }
+
+    if (Cabin == null)
+    {
+        Log.Error("[Elevator] Cabin is null in Roundstarted()");
+        return;
+    }
+
+    if (ElvMovement == null)
+    {
+        Log.Error("[Elevator] ElvMovement is null in Roundstarted()");
+        return;
+    }
+
+    // Wichtig: manche Schematic-/Audio-Sachen sind bei RoundStarted noch nicht komplett bereit
+    Timing.CallDelayed(0.5f, () =>
+    {
+        if (PlayerTransform == null)
         {
-            ElvSpeaker = PlayerTransform.position.PlayAudioAt("ElvMusic.ogg", 10, -1f, true);
-            ElvFloor = 1;
-            DoorUpController.Play("ToggleDoorUpClose");
-            DoorDownController.Play("ToggleDoorDownOpen");
-            Cabin.Play("ToggleDoorCarOpen");
-            ElvMovement.Play("ElvMoveDown");
-            DoorUpClose = true;
-            DoorDownClose = false;
-            DoorCarClose = false;
+            Log.Error("[Elevator] PlayerTransform became null after delay.");
+            return;
         }
+
+        ElvFloor = 1;
+        DoorUpClose = true;
+        DoorDownClose = false;
+        DoorCarClose = false;
+
+        try
+        {
+            DoorUpController.Play("ToggleDoorUpClose");
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[Elevator] DoorUpController.Play failed: {e}");
+        }
+
+        try
+        {
+            DoorDownController.Play("ToggleDoorDownOpen");
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[Elevator] DoorDownController.Play failed: {e}");
+        }
+
+        try
+        {
+            Cabin.Play("ToggleDoorCarOpen");
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[Elevator] Cabin.Play failed: {e}");
+        }
+
+        try
+        {
+            ElvMovement.Play("ElvMoveDown");
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[Elevator] ElvMovement.Play failed: {e}");
+        }
+
+        try
+        {
+            ElvSpeaker = PlayerTransform.position.PlayAudioAt("ElvMusic.ogg", 10f, -1f, true);
+
+            if (ElvSpeaker == null)
+                Log.Error("[Elevator] ElvMusic speaker is null. Check file name/path.");
+            else
+                Timing.RunCoroutine(MoveSpeaker(ElvSpeaker, 15f));
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[Elevator] PlayAudioAt ElvMusic failed: {e}");
+        }
+
+        try
+        {
+            var moveSpeaker = PlayerTransform.position.PlayAudioAt("ElvMove.ogg", 5f, 15f, true, 2f);
+
+            if (moveSpeaker == null)
+                Log.Error("[Elevator] ElvMove speaker is null. Check file name/path.");
+            else
+                Timing.RunCoroutine(MoveSpeaker(moveSpeaker, 15f));
+        }
+        catch (Exception e)
+        {
+            Log.Error($"[Elevator] PlayAudioAt ElvMove failed: {e}");
+        }
+    });
+}
         
         private void CallUp(Player player)
         {
@@ -72,8 +179,6 @@ namespace SCP1356Main.API.Schematic.Start
                 Cabin.Play("ToggleDoorCarClose");
                 DoorDownController.Play("ToggleDoorDownClose");
                 PlayerTransform.position.PlayAudioAt("ElvDoorClose.ogg", 5f, 5f);
-                Timing.CallDelayed(0.05f,
-                    () => PlayerTransform.position.PlayAudioAt("ElvDoorClose.ogg", 5f, 5f));
                 DoorCarClose = true;
                 DoorDownClose = true;
                 
@@ -86,9 +191,7 @@ namespace SCP1356Main.API.Schematic.Start
                     {
                         DoorUpController.Play("ToggleDoorUpOpen");
                         Cabin.Play("ToggleDoorCarOpen");
-                        PlayerTransform.position.PlayAudioAt("ElvDoorOpen.ogg", 5f, 5f);
-                        Timing.CallDelayed(0.05f,
-                            () => PlayerTransform.position.PlayAudioAt("ElvDoorOpen.ogg", 5f, 5f));
+                        PlayerTransform.position.PlayAudioAt("ElvOpen.ogg", 5f, 5f, false, 2f);
                         DoorUpClose = false;
                         DoorCarClose = false;
                         IsRunning = false;
@@ -115,8 +218,6 @@ namespace SCP1356Main.API.Schematic.Start
                 Cabin.Play("ToggleDoorCarClose");
                 DoorUpController.Play("ToggleDoorUpClose");
                 PlayerTransform.position.PlayAudioAt("ElvDoorClose.ogg", 5f, 5f);
-                Timing.CallDelayed(0.05f,
-                    () => PlayerTransform.position.PlayAudioAt("ElvDoorClose.ogg", 5f, 5f));
                 DoorCarClose = true;
                 DoorUpClose = true;
                 
@@ -129,9 +230,7 @@ namespace SCP1356Main.API.Schematic.Start
                     {
                         DoorDownController.Play("ToggleDoorDownOpen");
                         Cabin.Play("ToggleDoorCarOpen");
-                        PlayerTransform.position.PlayAudioAt("ElvDoorOpen.ogg", 5f, 5f);
-                        Timing.CallDelayed(0.05f,
-                            () => PlayerTransform.position.PlayAudioAt("ElvDoorOpen.ogg", 5f, 5f));
+                        PlayerTransform.position.PlayAudioAt("ElvOpen.ogg", 5f, 5f, false, 2f);
                         DoorDownClose = false;
                         DoorCarClose = false;
                         IsRunning = false;

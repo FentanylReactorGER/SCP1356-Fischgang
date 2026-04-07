@@ -7,19 +7,15 @@ namespace SCP1356Main.API.Extensions
 {
     public static class AudioExtensions
     {
-        public static Speaker PlayAudioAt(this Vector3 position, string clipPath, float maxDistance, float duration, bool loop = false)
+        public static Speaker PlayAudioAt(this Vector3 position, string clipPath, float maxDistance, float duration, bool loop = false, float volume = 1f)
         {
-            Log.Debug($"Playing audio step 1");
             string playerName = GenerateRandomString(6);
             string speakerName = GenerateRandomString(6);
             string clipName = GenerateRandomString(6);
-            Log.Debug($"Playing audio step 2");
             string fullPath = Path.Combine(Paths.Plugins, "audio", clipPath);
-            Log.Debug($"Playing audio step 3");
             AudioClipStorage.LoadClip(fullPath, clipName);
-            Log.Debug($"Playing audio step 4");
             var player = AudioPlayer.Create(playerName);
-            var speaker = player.AddSpeaker(speakerName, 1f, true, 1, maxDistance);
+            var speaker = player.AddSpeaker(speakerName, volume, true, 1, maxDistance);
             Log.Debug($"Playing audio at {fullPath}");
 
             speaker.Position = position;

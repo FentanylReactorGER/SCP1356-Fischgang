@@ -15,7 +15,7 @@ namespace SCP1356Main.API.Schematic.Start
         public static SchematicObject ReplaceRoom(RoomType roomType, string schematicName, Vector3 pos, Vector3 rot)
         {
             Room room = Room.Get(roomType);
-
+            
             if (room == null)
             {
                 if (TryReplaceCachedRoom(roomType, schematicName, pos, rot, out CachedRoomData cachedRoom))
@@ -93,7 +93,7 @@ namespace SCP1356Main.API.Schematic.Start
                     if (component.GetComponentsInParent<Component>()
                         .Any(x => x != null && (x.name.Contains("SCP-079") || x.name.Contains("CCTV"))))
                         continue;
-
+                    
                     Object.Destroy(component);
                 }
                 catch
